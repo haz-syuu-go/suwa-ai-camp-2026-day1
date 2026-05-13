@@ -514,6 +514,65 @@
     padding: 0 4px;
   }
 
+  /* Level table (ワーク お題) */
+  .level-table-wrap { overflow-x: auto; }
+  .level-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 15px;
+    background: #fff;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 4px 14px rgba(237,97,3,0.08);
+  }
+  .level-table th, .level-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid #f1e3d2;
+    text-align: left;
+    vertical-align: middle;
+    line-height: 1.55;
+  }
+  .level-table thead th {
+    background: var(--primary);
+    color: #fff;
+    font-weight: 700;
+    font-size: 15px;
+    text-align: center;
+    border-bottom: none;
+    letter-spacing: 0.04em;
+  }
+  .level-table .lv-col { width: 110px; }
+  .level-table .time-col { width: 80px; text-align: center; }
+  .level-table tbody tr:nth-child(even) td { background: #fff8f0; }
+  .level-table tbody tr:last-child td { border-bottom: none; }
+  .level-table .lv-cell { text-align: center; }
+  .level-table .td-title { font-weight: 600; font-size: 16px; }
+  .level-table .time-cell {
+    text-align: center;
+    font-weight: 700;
+    color: var(--primary);
+    font-size: 15px;
+  }
+  .level-table small {
+    font-size: 12px;
+    color: var(--text-sub);
+  }
+  .lv-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 13px;
+    color: #fff;
+    letter-spacing: 0.04em;
+  }
+  .lv-badge.lv1 { background: #f0a040; }
+  .lv-badge.lv2 { background: #ed8128; }
+  .lv-badge.lv3 { background: var(--primary); }
+  .lv-badge.lv4 { background: #c44a02; }
+  .lv-badge.lv5 { background: #8e3500; }
+
   /* Comparison table */
   .compare-table-wrap {
     overflow-x: auto;
@@ -1487,6 +1546,60 @@
     <div class="slide-num">15 / 16</div>
   </section>
 
+  <!-- 15.5: ワークのレベル別お題 -->
+  <section class="slide">
+    <span class="tag">ワークのお題（レベル別）</span>
+    <div class="msg">
+      <h2>自分のペースで、<span class="hl">5段階</span>のお題に挑戦</h2>
+    </div>
+    <div class="level-table-wrap" style="margin-top: 22px;">
+      <table class="level-table">
+        <thead>
+          <tr>
+            <th class="lv-col">レベル</th>
+            <th>お題</th>
+            <th>使うもの</th>
+            <th class="time-col">所要</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="lv-cell"><span class="lv-badge lv1">LV.1</span></td>
+            <td class="td-title">AIと壁打ち：お寺の魅力を5つ引き出す</td>
+            <td>チャット型AI<br><small>（ChatGPT / Claude）</small></td>
+            <td class="time-cell">5分</td>
+          </tr>
+          <tr>
+            <td class="lv-cell"><span class="lv-badge lv2">LV.2</span></td>
+            <td class="td-title">行事の<span class="em">案内文</span>を1本書いてもらう</td>
+            <td>チャット型AI</td>
+            <td class="time-cell">10分</td>
+          </tr>
+          <tr>
+            <td class="lv-cell"><span class="lv-badge lv3">LV.3</span></td>
+            <td class="td-title">チラシ用の<span class="em">画像素材</span>を1枚生成</td>
+            <td>画像生成AI<br><small>（nano-banana / ChatGPT）</small></td>
+            <td class="time-cell">10分</td>
+          </tr>
+          <tr>
+            <td class="lv-cell"><span class="lv-badge lv4">LV.4</span></td>
+            <td class="td-title">文章＋画像を<span class="em">1枚チラシ</span>に仕上げる</td>
+            <td>Canva（マジックレイヤー）</td>
+            <td class="time-cell">15分</td>
+          </tr>
+          <tr>
+            <td class="lv-cell"><span class="lv-badge lv5">LV.5</span></td>
+            <td class="td-title">自坊用「<span class="em">仕様書</span>」を作って再現性を残す</td>
+            <td>チャット型AI＋テキスト保存</td>
+            <td class="time-cell">20分</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="sub" style="margin-top: 14px;">→ 下のレベルから順に。<span class="em">「LV.1だけ」も完全にOK</span>。手を動かした分だけ持ち帰れます。</p>
+    <div class="slide-num"></div>
+  </section>
+
   <!-- 16: 付箋ワーク① -->
   <section class="slide work-frame">
     <span class="tag tag-green">付箋ワーク ①</span>
@@ -2404,12 +2517,33 @@
         <div class="desc">デザイナーが使う仕様書フォーマットを土台に、自坊に合わせて作り込む。再現性が高い。</div>
       </div>
     </div>
-    <div class="note" style="max-width: 900px; margin-top: 24px;">
-      <span class="note-title">使い分け</span>
-      <p class="body">
-        初めは①、慣れたら②、本気で量産するなら③へ。<span class="em">指示・仕様の精度</span>が、出てくる成果物の精度を決めます。
-      </p>
+    <p class="sub" style="margin-top: 18px; text-align:center; font-size: 17px;">
+      → <span class="em">3つの進め方で差異を確認してみてください。</span>
+    </p>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- Ch3: Canva編集（マジックレイヤー） -->
+  <section class="slide">
+    <span class="tag">3-2b. 仕上げはCanvaで</span>
+    <div class="msg">
+      <h2>AIで作った画像は、<span class="hl">Canvaで編集</span>すると良い</h2>
     </div>
+    <div class="two-col" style="margin-top: 28px;">
+      <div class="info-card">
+        <div class="badge">A</div>
+        <div class="ttl" style="margin-top:6px;">AI画像 → Canva貼り込み</div>
+        <div class="desc">AIで生成した素材をCanvaに読み込み、文字・余白・配置を整えるだけで、印刷物として通用するクオリティに。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">★</div>
+        <div class="ttl" style="margin-top:6px;">マジックレイヤーがおすすめ</div>
+        <div class="desc">Canvaの「マジックレイヤー」機能で、画像の一部だけを差し替え・拡張・修正できる。AI画像の微調整が圧倒的に楽。</div>
+      </div>
+    </div>
+    <p class="sub" style="margin-top: 18px; text-align:center; font-size: 17px;">
+      → AIで<span class="em">"作る"</span>、Canvaで<span class="em">"仕上げる"</span>。この組み合わせが今のところ最強。
+    </p>
     <div class="slide-num"></div>
   </section>
 
