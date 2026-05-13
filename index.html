@@ -260,6 +260,17 @@
   .note ul { padding-left: 22px; margin-top: 8px; }
   .note ul li { margin-bottom: 4px; }
 
+  /* Always-visible note (no toggle): render like an opened .note-body */
+  .note.no-toggle {
+    border: 2px solid var(--primary);
+    background: #ffffff;
+    border-radius: 4px;
+    padding: 22px 28px;
+    font-size: 19px; line-height: 1.75;
+    color: var(--text);
+    font-weight: 400;
+  }
+
   /* === Title slide === */
   .slide.title { justify-content: center; }
   .title h1 .accent { color: var(--primary); }
@@ -740,6 +751,7 @@
   <section class="slide">
     <span class="tag">諏訪まるごとAI特区 とは</span>
     <div class="msg">
+      <p style="font-size: 0.5em; color: #888; margin: 0 0 10px; letter-spacing: 0.04em;">― 神仏習合のまち、諏訪。―</p>
       <h1><span class="hl">地域ごと</span>、AIを使いこなす。</h1>
     </div>
     <div class="note" style="max-width: 820px;">
@@ -751,23 +763,6 @@
       </p>
     </div>
     <div class="slide-num">5 / 16</div>
-  </section>
-
-  <!-- 6: なぜ諏訪 -->
-  <section class="slide">
-    <span class="tag-outline">なぜ、諏訪なのか</span>
-    <div class="msg">
-      <h2><span class="hl">神仏習合</span>のまち、諏訪。</h2>
-    </div>
-    <div class="note" style="max-width: 820px;">
-      <span class="note-title">背景</span>
-      <p class="body">
-        千数百年にわたり、神と仏が同居してきた稀有な土地。<br>
-        対立ではなく一つの祈りとして抱き続けてきた<span class="em">包容力・しなやかさ</span>こそ、この地の智慧。<br>
-        「伝統 × 生成AI」「祈りの場 × テクノロジー」——この問いに最初に向き合うのに、諏訪以上にふさわしい土地はないと考えています。
-      </p>
-    </div>
-    <div class="slide-num">6 / 16</div>
   </section>
 
   <!-- 7: 開催背景 -->
@@ -791,7 +786,7 @@
   <section class="slide">
     <span class="tag-outline">なぜ "現地開催" にこだわるのか</span>
     <div class="msg">
-      <h2>今日から、<span class="hl">寺務で使える</span>状態に。</h2>
+      <h2><span class="hl">現地開催</span>にこだわる理由。</h2>
     </div>
 
     <div class="three-col" style="margin-top: 36px; gap: 36px;">
@@ -945,7 +940,7 @@
       <h2>基礎から発展へ、<span class="hl">積み上げ式</span>の構成。</h2>
     </div>
     <div class="two-col" style="margin-top:8px;">
-      <div class="note">
+      <div class="note no-toggle">
         <span class="note-title">DAY 1 ／ 基礎編</span>
         <p class="body" style="font-weight:600; font-size:21px; margin-top:4px;">チャット型AIの基礎基本を固める日</p>
         <p class="sub" style="margin-top:8px;">5/14（木）13:00 – 16:00</p>
@@ -955,7 +950,7 @@
           <li>寺社の専属デザイナー・クリエイターをつくる</li>
         </ul>
       </div>
-      <div class="note">
+      <div class="note no-toggle">
         <span class="note-title">DAY 2 ／ 発展編</span>
         <p class="body" style="font-weight:600; font-size:21px; margin-top:4px;">寺社の右腕＝AIエージェントをつくる日</p>
         <p class="sub" style="margin-top:8px;">5/15（金）11:00 – 15:00</p>
@@ -2365,8 +2360,9 @@
 
   // Wrap each .note content into a collapsible body + toggle button
   document.querySelectorAll('.note').forEach((note) => {
-    // Skip if already wrapped
+    // Skip if already wrapped or marked to be shown as-is
     if (note.querySelector('.note-toggle')) return;
+    if (note.classList.contains('no-toggle')) return;
     const inner = document.createDocumentFragment();
     while (note.firstChild) inner.appendChild(note.firstChild);
     const btn = document.createElement('button');
