@@ -53,6 +53,19 @@
   }
   .chapter-header .ch-divider { color: #c8c8c8; margin: 0 10px; font-weight: 400; }
   .chapter-header .ch-name { color: #8a8a8a; }
+  .chapter-header .ch-target {
+    display: inline-block;
+    margin-left: 14px;
+    padding: 2px 10px;
+    background: rgba(46,160,67,0.12);
+    color: #2ea043;
+    border: 1px solid rgba(46,160,67,0.45);
+    border-radius: 3px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    vertical-align: middle;
+  }
 
   /* Fix tag position to top-left of every content slide */
   .slide:not(.title):not(.chapter) > .tag,
@@ -3130,6 +3143,14 @@
   });
 
   // Auto-inject chapter header
+  // Day 1: 13:00 start → 16:00 finish. Target time at end of each chapter.
+  const chapterTargets = {
+    'CHAPTER 0': '〜13:30 目標',
+    'CHAPTER 1': '〜14:10 目標',
+    'CHAPTER 2': '〜14:45 目標',
+    'CHAPTER 3': '〜15:45 目標',
+    'DAY 1 ／ FIN.': '〜16:00 目標'
+  };
   let currentChNum = 'CHAPTER 0';
   let currentChName = 'ガイダンス';
   slides.forEach((slide) => {
@@ -3144,7 +3165,9 @@
     if (slide.querySelector(':scope > .chapter-header')) return;
     const header = document.createElement('div');
     header.className = 'chapter-header';
-    header.innerHTML = currentChNum + '<span class="ch-divider">／</span><span class="ch-name">' + currentChName + '</span>';
+    const target = chapterTargets[currentChNum];
+    const targetHtml = target ? '<span class="ch-target">' + target + '</span>' : '';
+    header.innerHTML = currentChNum + '<span class="ch-divider">／</span><span class="ch-name">' + currentChName + '</span>' + targetHtml;
     slide.insertBefore(header, slide.firstChild);
   });
   let idx = 0;
