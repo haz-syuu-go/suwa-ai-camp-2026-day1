@@ -527,6 +527,29 @@
     padding: 0 4px;
   }
 
+  /* Chip grid */
+  .chip-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px 18px;
+    max-width: 820px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .chip {
+    display: inline-block;
+    padding: 14px 18px;
+    background: #fff;
+    border: 1.5px solid var(--primary);
+    border-radius: 6px;
+    color: var(--text);
+    font-weight: 700;
+    font-size: 17px;
+    text-align: center;
+    box-shadow: 0 3px 10px rgba(237,97,3,0.08);
+    letter-spacing: 0.02em;
+  }
+
   /* Media grid (image + video side by side) */
   .media-grid {
     display: grid;
@@ -1013,6 +1036,25 @@
     <div class="slide-num"></div>
   </section>
 
+  <!-- 4: 数字で示す（slide 5の直後に移動） -->
+  <section class="slide">
+    <span class="tag-outline">これまでの実績</span>
+    <div class="msg">
+      <h2>数字で見る、<span class="hl">寺子屋しゅうごう</span></h2>
+    </div>
+    <div class="stat-row">
+      <div class="stat" style="text-align:center;">
+        <div><span class="num">80</span><span class="unit">回+ / 年</span></div>
+        <div class="label">寺社向けオンライン勉強会</div>
+      </div>
+      <div class="stat" style="text-align:center;">
+        <div><span class="num">1,000</span><span class="unit">名+</span></div>
+        <div class="label">のべ参加者（寺社関係者・神職）</div>
+      </div>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
   <!-- 3-2: お寺特化LINE -->
   <section class="slide">
     <span class="tag">寺子屋しゅうごう ② ／ 6</span>
@@ -1027,14 +1069,19 @@
     <div class="msg">
       <h2><span class="hl">お寺特化のLINE</span>を、100カ寺以上で</h2>
     </div>
-    <div class="note" style="max-width: 900px;">
-      <span class="note-title">概要</span>
-      <p class="body">
-        お寺向けに最適化した公式LINEアプリ。新着情報・参拝案内・スタンプラリー・功徳証など、
-        <span class="em">寺社ならではの檀信徒接点</span>をLINEで現代化します。<br>
-        紙の案内に頼らず、いつでも・どこでも届く接点をつくる仕組みです。
-      </p>
+    <div class="media-grid" style="margin-top: 18px;">
+      <div class="media-cell">
+        <img src="assets/line-app-overview.png" alt="お寺LINE アプリのような体験" class="media-img">
+        <p class="media-caption">まるでオリジナルアプリ／WEBサイトのように使えます</p>
+      </div>
+      <div class="media-cell">
+        <img src="assets/line-features.png" alt="お寺LINE 機能一覧" class="media-img">
+        <p class="media-caption">家族と地域をつなぐ、お寺のLINE</p>
+      </div>
     </div>
+    <p class="sub" style="margin-top: 10px;">
+      新着・参拝案内・スタンプラリー・功徳証など、<span class="em">寺社ならではの檀信徒接点</span>をLINEで現代化。
+    </p>
     <div class="slide-num"></div>
   </section>
 
@@ -1052,13 +1099,12 @@
     <div class="msg">
       <h2><span class="hl">おてらそう</span>。<br>お寺主体のお葬式</h2>
     </div>
-    <div class="note" style="max-width: 900px;">
-      <span class="note-title">概要</span>
-      <p class="body">
-        葬儀社が主役ではなく、<span class="em">お寺が主体</span>となって執り行う、新しいお葬式のかたち。<br>
-        寺院の境内・本堂で、宗派の本来の作法に沿って送る——その仕組みづくり・運営サポートをしています。
-      </p>
+    <div style="margin-top: 18px; text-align:center;">
+      <img src="assets/oterasou-collage.png" alt="おてらそう 本堂葬の事例" class="media-img" style="max-height: 380px; max-width: 90%;">
     </div>
+    <p class="sub" style="margin-top: 10px;">
+      葬儀社が主役ではなく、<span class="em">お寺が主体</span>となって執り行う、新しいお葬式のかたち。寺院の境内・本堂で、宗派の本来の作法に沿って送る——その仕組みづくり・運営サポート。
+    </p>
     <div class="slide-num"></div>
   </section>
 
@@ -1098,7 +1144,7 @@
       <div class="mini-card"><span class="mini-num">⑥</span>よもやま</div>
     </div>
     <div class="msg">
-      <h2><span class="hl">AIによる寺務改善・アプリ開発</span>。<br>—— 今日のメインテーマ</h2>
+      <h2><span class="hl">AIによる寺務改善・アプリ開発</span></h2>
     </div>
     <div class="note" style="max-width: 900px;">
       <span class="note-title">概要</span>
@@ -1125,33 +1171,19 @@
     <div class="msg">
       <h2><span class="hl">よもやま</span>、何でも</h2>
     </div>
-    <div class="note" style="max-width: 900px;">
-      <span class="note-title">概要</span>
-      <p class="body">
-        AIだけ・LINEだけ、と分野を区切らない。<span class="em">「お寺の困った」「やりたい」</span>に分野を超えて伴走します。<br>
-        他寺の事例を持ち寄り、寺院ごとに最適なやり方を一緒に考える——それが寺子屋しゅうごうのスタンスです。
-      </p>
+    <p class="sub" style="margin-top: 6px;">「かる〜い」ご相談でも構いません。<span class="em">お寺特化で身近なWEB（広報）担当</span>として、お役に立てることがあれば。</p>
+    <div class="chip-grid" style="margin-top: 20px;">
+      <span class="chip">LINEアプリ</span>
+      <span class="chip">WEBサイト制作</span>
+      <span class="chip">寺報・チラシ制作</span>
+      <span class="chip">お寺のお葬式</span>
+      <span class="chip">お墓販促</span>
+      <span class="chip">WEB広告</span>
+      <span class="chip">SNS運用</span>
+      <span class="chip">広報</span>
+      <span class="chip">行事集客</span>
     </div>
     <div class="slide-num"></div>
-  </section>
-
-  <!-- 4: 数字で示す -->
-  <section class="slide">
-    <span class="tag-outline">これまでの実績</span>
-    <div class="msg">
-      <h2>数字で見る、<span class="hl">寺子屋しゅうごう</span></h2>
-    </div>
-    <div class="stat-row">
-      <div class="stat" style="text-align:center;">
-        <div><span class="num">80</span><span class="unit">回+ / 年</span></div>
-        <div class="label">寺社向けオンライン勉強会</div>
-      </div>
-      <div class="stat" style="text-align:center;">
-        <div><span class="num">1,000</span><span class="unit">名+</span></div>
-        <div class="label">のべ参加者（寺社関係者・神職）</div>
-      </div>
-    </div>
-    <div class="slide-num">4 / 16</div>
   </section>
 
   <!-- 5: 諏訪まるごとAI特区とは -->
