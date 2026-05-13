@@ -527,6 +527,50 @@
     padding: 0 4px;
   }
 
+  /* Media grid (image + video side by side) */
+  .media-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px;
+    align-items: stretch;
+  }
+  .media-cell {
+    display: flex;
+    flex-direction: column;
+  }
+  .media-img {
+    width: 100%;
+    height: auto;
+    max-height: 360px;
+    object-fit: contain;
+    border-radius: 6px;
+    border: 1.5px solid #e8d9c4;
+    background: #fafafa;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+  .media-video-wrap {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+  }
+  .media-video-wrap iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  .media-caption {
+    margin-top: 8px;
+    font-size: 13px;
+    color: var(--text-sub);
+    text-align: center;
+  }
+
   /* Level table (ワーク お題) */
   .level-table-wrap { overflow-x: auto; }
   .level-table {
@@ -951,14 +995,21 @@
     <div class="msg">
       <h2><span class="hl">寺社むけ勉強会</span>を、毎週開催</h2>
     </div>
-    <div class="note" style="max-width: 900px;">
-      <span class="note-title">概要</span>
-      <p class="body">
-        毎週オンラインで開催している、寺社向けの実践勉強会。
-        生成AI・LINE・Googleマップ・永代供養墓・SNS運用など、<span class="em">寺社の現場課題</span>に合わせたテーマで学び合います。<br>
-        全国津々浦々の寺社関係者・神職が参加し、お互いの工夫を持ち寄って一緒にスキルアップを目指しています。
-      </p>
+    <div class="media-grid" style="margin-top: 18px;">
+      <div class="media-cell">
+        <img src="assets/shugo-seminar-collage.png" alt="しゅうごう 勉強会一覧" class="media-img">
+        <p class="media-caption">「お寺」× 生成AI・Canva・LINE・Instagram…etc</p>
+      </div>
+      <div class="media-cell">
+        <div class="media-video-wrap">
+          <iframe src="https://drive.google.com/file/d/1s8lS6DVxHID8LpXKs5BAJ0j50YHsNM62/preview" allow="autoplay" allowfullscreen></iframe>
+        </div>
+        <p class="media-caption">勉強会の様子（動画）</p>
+      </div>
     </div>
+    <p class="sub" style="margin-top: 10px;">
+      毎週オンラインで、生成AI・LINE・Googleマップ・SNS運用など<span class="em">寺社の現場課題</span>に直結するテーマで学び合っています。
+    </p>
     <div class="slide-num"></div>
   </section>
 
