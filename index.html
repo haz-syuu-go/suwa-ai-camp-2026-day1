@@ -362,8 +362,8 @@
   /* Case explorer (事例紹介 5要素 + クリック詳細) */
   .case-explorer .case-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 16px;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 14px;
     margin-top: 20px;
   }
   .case-explorer .case-card {
@@ -1375,6 +1375,11 @@
         <div class="ttl">お墓の案内 ほか</div>
         <div class="desc">参拝・授戒・終活</div>
       </div>
+      <div class="case-card" data-case="6">
+        <div class="badge">⑥</div>
+        <div class="ttl">ドキュメント</div>
+        <div class="desc">規約・書類・申込書</div>
+      </div>
     </div>
     <p class="sub" style="margin-top: 10px; text-align:center;">→ カードをクリックすると、下に詳細が表示されます。</p>
 
@@ -1416,6 +1421,15 @@
         <div class="case-items cols-2">
           <div class="case-item"><span class="item-label">墓</span><div class="item-title">永代供養墓・樹木葬の案内応答</div><div class="item-desc">よくある質問への自動回答。ご相談リスト作成・進捗管理まで一気通貫で。</div></div>
           <div class="case-item"><span class="item-label">参</span><div class="item-title">境内体験・檀信徒接点</div><div class="item-desc">境内マップ・スタンプラリーの素材生成、LINEへの応答補助。"届く"設計に。</div></div>
+        </div>
+      </div>
+      <div class="case-panel" data-case="6">
+        <div class="case-heading"><span class="case-num">⑥</span><span class="case-heading-text"><span class="hl">書類・規約</span>もまるごと下書き</span></div>
+        <div class="case-items cols-4">
+          <div class="case-item"><span class="item-label">規</span><div class="item-title">利用規約・約款のたたき台</div><div class="item-desc">永代供養・施設利用・SNS発信規約など、雛形＋自坊事情で下書きを生成。専門家チェック前提で時短。</div></div>
+          <div class="case-item"><span class="item-label">問</span><div class="item-title">アンケート雛形</div><div class="item-desc">行事・体験会・檀信徒の声を集める設問づくり。設計→集計→振り返り文まで一気通貫。</div></div>
+          <div class="case-item"><span class="item-label">¥</span><div class="item-title">料金表・お布施目安表</div><div class="item-desc">他寺事例の整理→自坊用テーブル化。比較表・補足説明文・お渡し用PDFまで。</div></div>
+          <div class="case-item"><span class="item-label">他</span><div class="item-title">申込書・誓約書・領収書</div><div class="item-desc">行事申込、墓地使用、奉納・寄進などの定型書類を一括下書き。Word/PDFで保存できる形に。</div></div>
         </div>
       </div>
     </div>
@@ -1792,6 +1806,40 @@
       </table>
     </div>
     <p class="sub" style="margin-top: 14px;">→ 全部使う必要なし。<span class="em">1つを使い込む</span>のが上達への近道。</p>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- Ch1: AIモデルによる性能差 -->
+  <section class="slide">
+    <span class="tag">Lv.1 補足</span>
+    <div class="msg">
+      <h2>同じAIでも、<span class="hl">モデル</span>で性能が大きく変わる</h2>
+    </div>
+    <div class="three-col" style="margin-top: 28px;">
+      <div class="info-card">
+        <div class="badge">無</div>
+        <div class="ttl" style="margin-top:6px;">無料モデル</div>
+        <div class="desc">日常の質問・要約・短い文章生成なら十分。寺社業務の8〜9割はここで足りる。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">中</div>
+        <div class="ttl" style="margin-top:6px;">標準モデル<br>（GPT-5 / Sonnet 等）</div>
+        <div class="desc">無料/有料の境目。長文・複雑な指示・画像理解で差が出る。普段使いの基準。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">上</div>
+        <div class="ttl" style="margin-top:6px;">最上位モデル<br>（GPT-5 Pro / Opus 等）</div>
+        <div class="desc">深い推論・大量のファイル横断・長時間の自律作業。月数千円〜の有料プラン領域。</div>
+      </div>
+    </div>
+    <div class="note" style="max-width: 920px; margin-top: 20px;">
+      <span class="note-title">押さえどころ</span>
+      <p class="body">
+        「AIが使えない」と感じた時は、ツールを変える前に<span class="em">モデルを切り替えてみる</span>。<br>
+        同じ画面の中でも上位モデルに切り替えれば、回答の質はガラッと変わります。<br>
+        まずは無料モデルで慣れ、足りなさを感じたら標準・最上位を試す、という順番が無駄なし。
+      </p>
+    </div>
     <div class="slide-num"></div>
   </section>
 
