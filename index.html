@@ -759,10 +759,29 @@
   }
   body:hover .controls { opacity: 0.85; }
 
+  /* Timekeeper */
+  .timer {
+    position: fixed; bottom: 14px; right: 18px;
+    background: rgba(46,160,67,0.92); color: #fff;
+    padding: 6px 14px; border-radius: 20px;
+    font-size: 13px; font-weight: 700;
+    font-feature-settings: "tnum";
+    letter-spacing: 0.04em;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    cursor: pointer;
+    user-select: none;
+  }
+  .timer .timer-label {
+    font-size: 11px; font-weight: 500;
+    opacity: 0.85; margin-right: 6px;
+  }
+  .timer.paused { background: rgba(140,140,140,0.92); }
+
   @media print {
     html, body { overflow: visible; height: auto; background: #fff; }
     .slide { display: flex !important; page-break-after: always; position: relative; height: 100vh; }
-    .progress, .controls { display: none; }
+    .progress, .controls, .timer { display: none; }
   }
 </style>
 </head>
@@ -2845,6 +2864,7 @@
 
 <div class="progress"><div class="progress-fill" id="bar"></div></div>
 <div class="controls">← → / Space でスライド送り ・ F で全画面 ・ 印刷でPDF化</div>
+<div class="timer" id="timer" title="クリック：一時停止/再開 ／ 長押し：リセット"><span class="timer-label">経過</span><span id="timer-value">0:00</span></div>
 
 <script>
   // Wrap each infographic group (containers with .info-card children) with a 図解 toggle
@@ -2899,6 +2919,69 @@
     // Prevent clicks inside the body from triggering slide nav
     body.addEventListener('click', (e) => e.stopPropagation());
   });
+
+  // Timekeeper (経過時間表示)
+  (function () {
+    const STORAGE_KEY = 'suwa-day1-timer';
+    const timerEl = document.getElementById('timer');
+    const valEl = document.getElementById('timer-value');
+    if (!timerEl || !valEl) return;
+    let state = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+    if (!state) state = { startedAt: Date.now(), paused: false, pausedAccum: 0, pausedAt: null };
+    const save = () => localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    const fmt = (sec) => {
+      sec = Math.max(0, Math.floor(sec));
+      const h = Math.floor(sec / 3600);
+      const m = Math.floor((sec % 3600) / 60);
+      const s = sec % 60;
+      const mm = String(m).padStart(h > 0 ? 2 : 1, '0');
+      const ss = String(s).padStart(2, '0');
+      return h > 0 ? `${h}:${mm}:${ss}` : `${mm}:${ss}`;
+    };
+    const tick = () => {
+      const now = Date.now();
+      let elapsedMs;
+      if (state.paused) {
+        elapsedMs = (state.pausedAt - state.startedAt) - state.pausedAccum;
+        timerEl.classList.add('paused');
+      } else {
+        elapsedMs = (now - state.startedAt) - state.pausedAccum;
+        timerEl.classList.remove('paused');
+      }
+      valEl.textContent = fmt(elapsedMs / 1000);
+    };
+    setInterval(tick, 1000);
+    tick();
+    let pressTimer = null;
+    timerEl.addEventListener('mousedown', () => {
+      pressTimer = setTimeout(() => {
+        if (confirm('経過時間をリセットしますか？')) {
+          state = { startedAt: Date.now(), paused: false, pausedAccum: 0, pausedAt: null };
+          save();
+          tick();
+        }
+        pressTimer = null;
+      }, 700);
+    });
+    timerEl.addEventListener('mouseup', () => {
+      if (pressTimer) {
+        clearTimeout(pressTimer);
+        pressTimer = null;
+        if (state.paused) {
+          state.pausedAccum += Date.now() - state.pausedAt;
+          state.paused = false;
+          state.pausedAt = null;
+        } else {
+          state.paused = true;
+          state.pausedAt = Date.now();
+        }
+        save();
+        tick();
+      }
+    });
+    timerEl.addEventListener('mouseleave', () => { if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; } });
+    window.addEventListener('beforeunload', save);
+  })();
 
   // Q&A answer toggle (よくある質問)
   document.querySelectorAll('.qa-toggle').forEach((btn) => {
