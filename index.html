@@ -1,0 +1,2441 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>諏訪まるごとAI特区 1日目 - 0_ガイダンス</title>
+<style>
+  :root {
+    --primary: #ed6103;
+    --primary-soft: #ffd9bf;
+    --grid: #fbe6d3;
+    --text: #1f1f1f;
+    --text-sub: #5a5a5a;
+    --bg: #ffffff;
+    --box-border: #d8d8d8;
+    --box-bg: #fafafa;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    height: 100%;
+    font-family: "Hiragino Sans", "Yu Gothic", "Meiryo", -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #ddd;
+    color: var(--text);
+    overflow: hidden;
+    font-feature-settings: "palt";
+    -webkit-font-smoothing: antialiased;
+  }
+  .deck { position: relative; width: 100vw; height: 100vh; }
+  .slide {
+    position: absolute; inset: 0;
+    background: var(--bg);
+    background-image:
+      linear-gradient(to right, var(--grid) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
+    background-size: 36px 36px;
+    padding: 160px 90px 80px;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .slide.title, .slide.chapter { padding: 70px 90px; }
+
+  /* Fixed chapter header (auto-injected) */
+  .chapter-header {
+    position: absolute;
+    top: 56px; left: 90px;
+    font-size: 18px; font-weight: 700;
+    color: #9a9a9a;
+    letter-spacing: 0.08em;
+    text-transform: none;
+    z-index: 4;
+  }
+  .chapter-header .ch-divider { color: #c8c8c8; margin: 0 10px; font-weight: 400; }
+  .chapter-header .ch-name { color: #8a8a8a; }
+
+  /* Fix tag position to top-left of every content slide */
+  .slide:not(.title):not(.chapter) > .tag,
+  .slide:not(.title):not(.chapter) > .tag-outline {
+    position: absolute;
+    top: 100px; left: 90px;
+    margin-bottom: 0 !important;
+    align-self: flex-start !important;
+    z-index: 4;
+  }
+  .slide.active { display: flex; }
+  .slide-num {
+    position: absolute; top: 28px; right: 36px;
+    font-size: 13px; color: var(--text-sub);
+    font-weight: 500;
+    background: rgba(255,255,255,0.9);
+    padding: 4px 10px; border-radius: 12px;
+  }
+
+  /* === Typography === */
+  h1 { font-size: 64px; line-height: 1.25; font-weight: 700; letter-spacing: -0.01em; }
+  h2 { font-size: 52px; line-height: 1.3; font-weight: 700; letter-spacing: -0.01em; }
+  h3 { font-size: 36px; line-height: 1.3; font-weight: 700; }
+  .lead { font-size: 24px; line-height: 1.7; font-weight: 500; }
+  .body { font-size: 20px; line-height: 1.75; font-weight: 400; color: var(--text); }
+  .sub  { font-size: 18px; color: var(--text-sub); font-weight: 400; line-height: 1.7; }
+  .small{ font-size: 15px; color: var(--text-sub); font-weight: 400; }
+  /* Marker highlight — used in both headings (.hl) and bold text inside 解説 boxes */
+  .hl,
+  .note-body .em,
+  .note-body strong,
+  .note-body b {
+    background: linear-gradient(transparent 55%, #ffd9a8 55%, #ffd9a8 92%, transparent 92%);
+    font-weight: 700;
+    padding: 0 2px;
+  }
+  .em { font-weight: 700; }
+  /* Keep the note-title (PROFILE/概要…) unmarked */
+  .note-body .note-title { background: none; padding-left: 8px; }
+
+  /* === Tag === */
+  .tag {
+    display: inline-block;
+    background: var(--primary); color: #fff;
+    padding: 6px 14px;
+    font-size: 16px; font-weight: 600;
+    margin-bottom: 24px;
+    border-radius: 2px;
+    letter-spacing: 0.04em;
+    align-self: flex-start;
+  }
+  .tag-outline {
+    display: inline-block;
+    border: 2px solid var(--primary); color: var(--primary);
+    padding: 5px 14px;
+    font-size: 16px; font-weight: 600;
+    margin-bottom: 24px;
+    border-radius: 2px;
+    background: #fff;
+    align-self: flex-start;
+  }
+  .tag-green { background: #2ea043; }
+
+  /* === Chapter intro slide === */
+  .slide.chapter {
+    justify-content: center; align-items: flex-start;
+  }
+  .chapter .ch-num {
+    font-size: 22px; font-weight: 700;
+    color: var(--primary); letter-spacing: 0.15em;
+    margin-bottom: 12px;
+  }
+  .chapter .ch-title {
+    font-size: 76px; font-weight: 700; line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+  .chapter .ch-sub {
+    font-size: 22px; color: var(--text-sub); font-weight: 500;
+    margin-top: 24px; line-height: 1.7;
+  }
+  .chapter .ch-bar {
+    width: 80px; height: 6px; background: var(--primary);
+    margin: 20px 0;
+  }
+
+  /* Mini overview (6-card thumbnail with active highlight) */
+  .mini-overview {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+    margin: 0 0 28px 0;
+  }
+  .mini-card {
+    border: 1.5px solid #ddd;
+    padding: 10px 6px;
+    text-align: center;
+    font-size: 12px;
+    color: #aaa;
+    border-radius: 4px;
+    background: #fff;
+    line-height: 1.4;
+    transition: all 0.25s ease;
+    font-weight: 600;
+  }
+  .mini-card .mini-num {
+    display: block;
+    font-size: 14px;
+    color: #ccc;
+    margin-bottom: 2px;
+  }
+  .mini-card.active {
+    border: 3px solid var(--primary);
+    color: var(--text);
+    background: #fff7f0;
+    box-shadow: 0 4px 12px rgba(237,97,3,0.18);
+    transform: scale(1.04);
+  }
+  .mini-card.active .mini-num {
+    color: var(--primary);
+    font-weight: 800;
+  }
+
+  /* Pillar list (number + heading + small text) */
+  .pillar {
+    display: grid; grid-template-columns: 56px 1fr; gap: 18px;
+    align-items: flex-start;
+    padding: 16px 0;
+    border-bottom: 1px solid #eee;
+  }
+  .pillar:last-child { border-bottom: none; }
+  .pillar .p-num {
+    width: 44px; height: 44px;
+    background: var(--primary); color: #fff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 700;
+  }
+  .pillar .p-ttl { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
+  .pillar .p-desc { font-size: 17px; color: var(--text-sub); line-height: 1.7; }
+
+  /* === Main message block === */
+  .msg { margin-bottom: 28px; }
+  .msg h1, .msg h2 { font-weight: 700; }
+
+  /* === Explanation box (collapsible) === */
+  .note {
+    position: relative;
+    max-width: 100%;
+    margin-top: 14px;
+  }
+  /* Toggle button (解説 tab) */
+  .note-toggle {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--primary); color: #fff;
+    padding: 8px 18px;
+    font-size: 15px; font-weight: 700;
+    letter-spacing: 0.06em;
+    border: none; border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    box-shadow: 0 2px 6px rgba(237,97,3,0.25);
+    transition: background 0.15s ease;
+  }
+  .note-toggle:hover { background: #d65500; }
+  .note-toggle .arrow {
+    display: inline-block;
+    transition: transform 0.25s ease;
+    font-size: 12px;
+  }
+  .note.open .note-toggle .arrow { transform: rotate(180deg); }
+
+  /* Collapsible body */
+  .note-body {
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transition: max-height 0.35s ease, opacity 0.25s ease, margin-top 0.25s ease;
+    border: 2px solid var(--primary);
+    border-top: none;
+    background: #ffffff;
+    border-radius: 0 0 4px 4px;
+    padding: 0 28px;
+    margin-top: 0;
+    font-size: 19px; line-height: 1.75;
+    color: var(--text);
+    font-weight: 400;
+  }
+  .note.open .note-body {
+    max-height: 800px;
+    opacity: 1;
+    padding: 22px 28px;
+    margin-top: -2px;
+    border-top: 2px solid var(--primary);
+    border-radius: 4px;
+  }
+  .note .note-title {
+    font-size: 14px; font-weight: 700;
+    color: var(--primary);
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+    display: inline-block;
+    border-left: 3px solid var(--primary);
+    padding-left: 8px;
+  }
+  .note ul { padding-left: 22px; margin-top: 8px; }
+  .note ul li { margin-bottom: 4px; }
+
+  /* === Title slide === */
+  .slide.title { justify-content: center; }
+  .title h1 .accent { color: var(--primary); }
+  .title .subtitle {
+    font-size: 24px; font-weight: 500; margin-top: 16px;
+    color: var(--text-sub);
+  }
+  .title .meta {
+    margin-top: 40px; font-size: 17px; color: var(--text-sub); font-weight: 500;
+    line-height: 1.8;
+  }
+
+  /* === Layouts === */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+  .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .four-col  { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
+  .four-col .info-card { padding: 50px 16px 18px; }
+  .four-col .info-card .icon { width: 64px; height: 64px; margin-bottom: 10px; }
+  .four-col .info-card .ttl { font-size: 19px; }
+  .four-col .info-card .desc { font-size: 14px; }
+
+  /* === Infographic card === */
+  .info-card {
+    position: relative;
+    background: #fff;
+    border: 2px solid var(--primary);
+    border-radius: 6px;
+    padding: 56px 22px 22px;
+    text-align: center;
+    box-shadow: 0 4px 14px rgba(237,97,3,0.08);
+  }
+  .info-card .badge {
+    position: absolute;
+    top: -22px; left: 50%; transform: translateX(-50%);
+    width: 44px; height: 44px;
+    background: var(--primary); color: #fff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 700;
+    letter-spacing: 0.04em;
+    box-shadow: 0 2px 6px rgba(237,97,3,0.3);
+  }
+  .info-card .icon {
+    width: 78px; height: 78px;
+    margin: 0 auto 14px;
+    color: var(--primary);
+  }
+  .info-card .icon svg { width: 100%; height: 100%; }
+  .info-card .ttl {
+    font-size: 22px; font-weight: 700;
+    line-height: 1.4;
+    margin-bottom: 10px;
+    color: var(--text);
+  }
+  .info-card .desc {
+    font-size: 15px;
+    color: var(--text-sub);
+    line-height: 1.7;
+    text-align: left;
+    margin-top: 6px;
+  }
+
+  /* === Infographic wrapper (collapsible whole set) === */
+  .infographic-wrap {
+    width: 100%;
+    margin-top: 12px;
+  }
+  .figure-toggle {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: #2b6cb0; color: #fff;
+    padding: 8px 18px;
+    font-size: 15px; font-weight: 700;
+    letter-spacing: 0.06em;
+    border: none; border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    box-shadow: 0 2px 6px rgba(43,108,176,0.25);
+    transition: background 0.15s ease;
+  }
+  .figure-toggle:hover { background: #1f4f88; }
+  .figure-toggle .arrow {
+    display: inline-block;
+    transition: transform 0.25s ease;
+    font-size: 12px;
+  }
+  .infographic-wrap.open .figure-toggle .arrow { transform: rotate(180deg); }
+
+  .infographic-wrap .figure-body {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, opacity 0.25s ease, margin-top 0.25s ease;
+    margin-top: 0;
+  }
+  .infographic-wrap.open .figure-body {
+    max-height: 1000px;
+    opacity: 1;
+    margin-top: 18px;
+  }
+
+  /* === Stat === */
+  .stat-row { display: flex; gap: 80px; justify-content: center; align-items: flex-end; margin-top: 24px; }
+  .stat .num {
+    font-size: 110px; font-weight: 700; color: var(--primary); line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .stat .unit { font-size: 28px; font-weight: 600; margin-left: 4px; color: var(--text); }
+  .stat .label { font-size: 18px; font-weight: 500; margin-top: 10px; color: var(--text-sub); }
+
+  /* === Photo placeholder === */
+  .photo-box {
+    background: linear-gradient(135deg, #f5f5f5, #e9e9e9);
+    border: 2px solid #fff;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.10);
+    display: flex; align-items: center; justify-content: center;
+    color: #999; font-size: 13px;
+    border-radius: 4px;
+  }
+
+  /* === Big-bullets (for goals) === */
+  ul.goal-list {
+    list-style: none; padding: 0;
+    font-size: 24px; font-weight: 600; line-height: 1.6;
+  }
+  ul.goal-list li {
+    margin-bottom: 12px;
+    padding: 12px 18px;
+    border-left: 4px solid var(--primary);
+    background: #fff;
+  }
+  ul.goal-list li .step { color: var(--primary); margin-right: 12px; font-weight: 700; }
+
+  /* === Question block === */
+  .question {
+    border-left: 5px solid var(--primary);
+    padding: 14px 24px;
+    background: #fff;
+    font-size: 22px; font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .question-answer { font-size: 17px; color: var(--text-sub); padding-left: 12px; line-height: 1.7; }
+
+  /* === Quote (大きい問い) === */
+  .quote-big {
+    font-size: 52px; font-weight: 700; line-height: 1.35;
+    text-align: center; letter-spacing: -0.01em;
+  }
+
+  /* === Progress / Controls === */
+  .progress {
+    position: fixed; left: 0; bottom: 0; width: 100%;
+    height: 4px; background: rgba(0,0,0,0.06); z-index: 100;
+  }
+  .progress-fill { height: 100%; background: var(--primary); transition: width 0.3s ease; }
+  .controls {
+    position: fixed; bottom: 16px; left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.65); color: #fff;
+    padding: 6px 14px; border-radius: 20px;
+    font-size: 12px; z-index: 100;
+    opacity: 0; transition: opacity 0.3s;
+  }
+  body:hover .controls { opacity: 0.85; }
+
+  @media print {
+    html, body { overflow: visible; height: auto; background: #fff; }
+    .slide { display: flex !important; page-break-after: always; position: relative; height: 100vh; }
+    .progress, .controls { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+  <!-- 1: Title -->
+  <section class="slide title active">
+    <span class="tag">DAY 1 ／ 0. ガイダンス</span>
+    <h1>諏訪まるごと<span class="accent">AI特区</span>、<br>はじまります。</h1>
+    <div class="subtitle">寺子屋しゅうごう AI 集中合宿 ／ 1日目（基礎編）</div>
+    <div class="meta">
+      2026年5月14日（木）13:00 – 16:00　仏法紹隆寺<br>
+      寺子屋しゅうごう 主宰　内藤 葉月
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 本日の約束 (参加方法) -->
+  <section class="slide">
+    <span class="tag">本日の約束（参加方法）</span>
+    <div class="msg">
+      <h2>この場で、<span class="hl">触る・伝える・残す</span>。</h2>
+    </div>
+    <div class="four-col" style="margin-top: 24px;">
+      <div class="info-card">
+        <div class="badge">①</div>
+        <div class="icon">
+          <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="24" y="10" width="32" height="56" rx="4"/>
+            <line x1="36" y1="60" x2="44" y2="60"/>
+          </svg>
+        </div>
+        <div class="ttl" style="margin-top: 6px;">「この場」で触る</div>
+        <div class="desc">スマホでもOK。AIを聞くだけでなく、その場で動かしてみる。手を動かすのが一番の近道。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">②</div>
+        <div class="icon">
+          <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="14" x2="22" y2="70"/>
+            <path d="M22 14 h32 l-6 8 l6 8 h-32 z" fill="currentColor"/>
+          </svg>
+        </div>
+        <div class="ttl" style="margin-top: 6px;">意思表示は「旗」</div>
+        <div class="desc">分からない・聞きたい・進んでいいの3パターン。手を挙げる代わりに机上の旗で意思表示。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">③</div>
+        <div class="icon">
+          <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="14" y="18" width="22" height="22"/>
+            <rect x="42" y="18" width="22" height="22"/>
+            <rect x="14" y="46" width="22" height="22"/>
+            <rect x="42" y="46" width="22" height="22"/>
+          </svg>
+        </div>
+        <div class="ttl" style="margin-top: 6px;">付箋ですぐメモ</div>
+        <div class="desc">新たな学び・アイデア・気づき、何でもOK。後のワークでも活用するので、思いついたら即書く。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">④</div>
+        <div class="icon">
+          <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="40" cy="30" r="10"/>
+            <path d="M20 64 c0 -12 9 -20 20 -20 s20 8 20 20"/>
+          </svg>
+        </div>
+        <div class="ttl" style="margin-top: 6px;">サポートします</div>
+        <div class="desc">小川さん・片野さんが当日のサポート役。詰まったら声をかけてください（撮影も対応）。</div>
+      </div>
+    </div>
+    <p class="sub" style="margin-top: 14px;">→ ひとりで悩まず、その場で解消していきましょう。</p>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 2: 自己紹介 -->
+  <section class="slide">
+    <span class="tag-outline">自己紹介</span>
+    <div class="two-col">
+      <div>
+        <div class="msg">
+          <h2>寺子屋しゅうごう 主宰<br><span class="hl">内藤 葉月</span></h2>
+          <p class="lead" style="margin-top:14px; color:var(--text-sub);">寺社のLINEとAIをつくる人</p>
+        </div>
+        <div class="note">
+          <span class="note-title">PROFILE</span>
+          <ul class="body" style="font-size:18px;">
+            <li>新潟・長岡 出身</li>
+            <li>年間80回以上の寺社向け勉強会に登壇</li>
+            <li>お寺特化LINE責任者（100カ寺以上）</li>
+            <li>趣味：日本酒の飲み比べ、タップダンス</li>
+          </ul>
+        </div>
+      </div>
+      <div class="photo-box" style="height: 420px;">（内藤プロフィール写真）</div>
+    </div>
+    <div class="slide-num">2 / 16</div>
+  </section>
+
+  <!-- 3: 寺子屋しゅうごう / 何をしているか -->
+  <section class="slide">
+    <span class="tag">寺子屋しゅうごう とは</span>
+    <div class="msg">
+      <h2>寺社のあらゆることを、<span class="hl">伴走</span>します。</h2>
+    </div>
+    <div class="three-col" style="margin-top: 24px;">
+      <div class="info-card">
+        <div class="badge">①</div>
+        <div class="ttl" style="margin-top:6px;">お寺向け勉強会</div>
+        <div class="desc">毎週オンラインで開催。寺社の現場課題に合わせた実践テーマで学び合う。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">②</div>
+        <div class="ttl" style="margin-top:6px;">お寺特化LINE</div>
+        <div class="desc">100カ寺以上で稼働。檀信徒との接点をLINEで現代化。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">③</div>
+        <div class="ttl" style="margin-top:6px;">おてらそう（寺院葬）</div>
+        <div class="desc">お寺を主体とした、新しいお葬式のかたち。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">④</div>
+        <div class="ttl" style="margin-top:6px;">永代供養墓・お墓の認知施策</div>
+        <div class="desc">樹木葬・お墓の集客導線・チラシ・WEB施策。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">⑤</div>
+        <div class="ttl" style="margin-top:6px;">AIによる寺務改善</div>
+        <div class="desc">生成AI・コネクタ・AIエージェントで寺務の負担を下げる。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">⑥</div>
+        <div class="ttl" style="margin-top:6px;">よもやま、何でも</div>
+        <div class="desc">分野にとらわれず、寺社の「困った」「やりたい」に伴走。</div>
+      </div>
+    </div>
+    <p class="sub" style="margin-top: 14px;">※ 事例共有・勉強会が趣旨で、勧誘・販売は一切ありません。</p>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 3-1: お寺向け勉強会 -->
+  <section class="slide">
+    <span class="tag">寺子屋しゅうごう ① ／ 6</span>
+    <div class="mini-overview">
+      <div class="mini-card active"><span class="mini-num">①</span>お寺向け勉強会</div>
+      <div class="mini-card"><span class="mini-num">②</span>お寺特化LINE</div>
+      <div class="mini-card"><span class="mini-num">③</span>おてらそう</div>
+      <div class="mini-card"><span class="mini-num">④</span>お墓の認知施策</div>
+      <div class="mini-card"><span class="mini-num">⑤</span>AI寺務改善</div>
+      <div class="mini-card"><span class="mini-num">⑥</span>よもやま</div>
+    </div>
+    <div class="msg">
+      <h2><span class="hl">お寺向け勉強会</span>を、毎週開催。</h2>
+    </div>
+    <div class="note" style="max-width: 900px;">
+      <span class="note-title">概要</span>
+      <p class="body">
+        毎週オンラインで開催している、寺社向けの実践勉強会。
+        生成AI・LINE・Googleマップ・永代供養墓・SNS運用など、<span class="em">寺社の現場課題</span>に合わせたテーマで学び合います。<br>
+        全国津々浦々の寺社関係者・神職が参加し、お互いの工夫を持ち寄って一緒にスキルアップを目指しています。
+      </p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 3-2: お寺特化LINE -->
+  <section class="slide">
+    <span class="tag">寺子屋しゅうごう ② ／ 6</span>
+    <div class="mini-overview">
+      <div class="mini-card"><span class="mini-num">①</span>お寺向け勉強会</div>
+      <div class="mini-card active"><span class="mini-num">②</span>お寺特化LINE</div>
+      <div class="mini-card"><span class="mini-num">③</span>おてらそう</div>
+      <div class="mini-card"><span class="mini-num">④</span>お墓の認知施策</div>
+      <div class="mini-card"><span class="mini-num">⑤</span>AI寺務改善</div>
+      <div class="mini-card"><span class="mini-num">⑥</span>よもやま</div>
+    </div>
+    <div class="msg">
+      <h2><span class="hl">お寺特化のLINE</span>を、100カ寺以上で。</h2>
+    </div>
+    <div class="note" style="max-width: 900px;">
+      <span class="note-title">概要</span>
+      <p class="body">
+        お寺向けに最適化した公式LINEアプリ。新着情報・参拝案内・スタンプラリー・功徳証など、
+        <span class="em">寺社ならではの檀信徒接点</span>をLINEで現代化します。<br>
+        紙の案内に頼らず、いつでも・どこでも届く接点をつくる仕組みです。
+      </p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 3-3: おてらそう -->
+  <section class="slide">
+    <span class="tag">寺子屋しゅうごう ③ ／ 6</span>
+    <div class="mini-overview">
+      <div class="mini-card"><span class="mini-num">①</span>お寺向け勉強会</div>
+      <div class="mini-card"><span class="mini-num">②</span>お寺特化LINE</div>
+      <div class="mini-card active"><span class="mini-num">③</span>おてらそう</div>
+      <div class="mini-card"><span class="mini-num">④</span>お墓の認知施策</div>
+      <div class="mini-card"><span class="mini-num">⑤</span>AI寺務改善</div>
+      <div class="mini-card"><span class="mini-num">⑥</span>よもやま</div>
+    </div>
+    <div class="msg">
+      <h2><span class="hl">おてらそう</span>。<br>お寺主体のお葬式。</h2>
+    </div>
+    <div class="note" style="max-width: 900px;">
+      <span class="note-title">概要</span>
+      <p class="body">
+        葬儀社が主役ではなく、<span class="em">お寺が主体</span>となって執り行う、新しいお葬式のかたち。<br>
+        寺院の境内・本堂で、宗派の本来の作法に沿って送る——その仕組みづくり・運営サポートをしています。
+      </p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 3-4: 永代供養墓・お墓の認知施策 -->
+  <section class="slide">
+    <span class="tag">寺子屋しゅうごう ④ ／ 6</span>
+    <div class="mini-overview">
+      <div class="mini-card"><span class="mini-num">①</span>お寺向け勉強会</div>
+      <div class="mini-card"><span class="mini-num">②</span>お寺特化LINE</div>
+      <div class="mini-card"><span class="mini-num">③</span>おてらそう</div>
+      <div class="mini-card active"><span class="mini-num">④</span>お墓の認知施策</div>
+      <div class="mini-card"><span class="mini-num">⑤</span>AI寺務改善</div>
+      <div class="mini-card"><span class="mini-num">⑥</span>よもやま</div>
+    </div>
+    <div class="msg">
+      <h2>永代供養墓・お墓の<span class="hl">認知施策</span>。</h2>
+    </div>
+    <div class="note" style="max-width: 900px;">
+      <span class="note-title">概要</span>
+      <p class="body">
+        樹木葬・永代供養墓を「ある」だけで終わらせない。<span class="em">必要な人に届ける</span>ための、集客導線・チラシ・WEB施策をサポート。<br>
+        看板・のぼり旗・現地サイン・WEBサイトまで、認知から問い合わせまでの一連の流れを設計します。
+      </p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 3-5: AIによる寺務改善 -->
+  <section class="slide">
+    <span class="tag">寺子屋しゅうごう ⑤ ／ 6</span>
+    <div class="mini-overview">
+      <div class="mini-card"><span class="mini-num">①</span>お寺向け勉強会</div>
+      <div class="mini-card"><span class="mini-num">②</span>お寺特化LINE</div>
+      <div class="mini-card"><span class="mini-num">③</span>おてらそう</div>
+      <div class="mini-card"><span class="mini-num">④</span>お墓の認知施策</div>
+      <div class="mini-card active"><span class="mini-num">⑤</span>AI寺務改善</div>
+      <div class="mini-card"><span class="mini-num">⑥</span>よもやま</div>
+    </div>
+    <div class="msg">
+      <h2><span class="hl">AIによる寺務改善</span>。<br>—— 今日のメインテーマ。</h2>
+    </div>
+    <div class="note" style="max-width: 900px;">
+      <span class="note-title">概要</span>
+      <p class="body">
+        生成AI・コネクタ・AIエージェントを使い、<span class="em">寺務の負担を下げる</span>取り組み。
+        寺報・メール下書き・予定管理・チラシ制作・多言語対応まで、寺社業務の幅広い領域に展開しています。<br>
+        今回の2日間も、この実践知をそのままお持ち帰りいただける構成です。
+      </p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 3-6: よもやま、何でも -->
+  <section class="slide">
+    <span class="tag">寺子屋しゅうごう ⑥ ／ 6</span>
+    <div class="mini-overview">
+      <div class="mini-card"><span class="mini-num">①</span>お寺向け勉強会</div>
+      <div class="mini-card"><span class="mini-num">②</span>お寺特化LINE</div>
+      <div class="mini-card"><span class="mini-num">③</span>おてらそう</div>
+      <div class="mini-card"><span class="mini-num">④</span>お墓の認知施策</div>
+      <div class="mini-card"><span class="mini-num">⑤</span>AI寺務改善</div>
+      <div class="mini-card active"><span class="mini-num">⑥</span>よもやま</div>
+    </div>
+    <div class="msg">
+      <h2><span class="hl">よもやま</span>、何でも。</h2>
+    </div>
+    <div class="note" style="max-width: 900px;">
+      <span class="note-title">概要</span>
+      <p class="body">
+        AIだけ・LINEだけ、と分野を区切らない。<span class="em">「お寺の困った」「やりたい」</span>に分野を超えて伴走します。<br>
+        他寺の事例を持ち寄り、寺院ごとに最適なやり方を一緒に考える——それが寺子屋しゅうごうのスタンスです。
+      </p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 4: 数字で示す -->
+  <section class="slide">
+    <span class="tag-outline">これまでの実績</span>
+    <div class="msg">
+      <h2>数字で見る、<span class="hl">寺子屋しゅうごう</span>。</h2>
+    </div>
+    <div class="stat-row">
+      <div class="stat" style="text-align:center;">
+        <div><span class="num">80</span><span class="unit">回+ / 年</span></div>
+        <div class="label">寺社向けオンライン勉強会</div>
+      </div>
+      <div class="stat" style="text-align:center;">
+        <div><span class="num">1,000</span><span class="unit">名+</span></div>
+        <div class="label">のべ参加者（寺社関係者・神職）</div>
+      </div>
+    </div>
+    <div class="slide-num">4 / 16</div>
+  </section>
+
+  <!-- 5: 諏訪まるごとAI特区とは -->
+  <section class="slide">
+    <span class="tag">諏訪まるごとAI特区 とは</span>
+    <div class="msg">
+      <h1><span class="hl">地域ごと</span>、AIを使いこなす。</h1>
+    </div>
+    <div class="note" style="max-width: 820px;">
+      <span class="note-title">趣旨</span>
+      <p class="body">
+        個人単位の学びだけでは、地域の課題は変わらない。<br>
+        諏訪エリアの寺社・神社が「面」で集い、一丸となってAI活用を進めます。
+        全国の寺社地域に向けた<span class="em">ロールモデル</span>を、ここから作っていきます。
+      </p>
+    </div>
+    <div class="slide-num">5 / 16</div>
+  </section>
+
+  <!-- 6: なぜ諏訪 -->
+  <section class="slide">
+    <span class="tag-outline">なぜ、諏訪なのか</span>
+    <div class="msg">
+      <h2><span class="hl">神仏習合</span>のまち、諏訪。</h2>
+    </div>
+    <div class="note" style="max-width: 820px;">
+      <span class="note-title">背景</span>
+      <p class="body">
+        千数百年にわたり、神と仏が同居してきた稀有な土地。<br>
+        対立ではなく一つの祈りとして抱き続けてきた<span class="em">包容力・しなやかさ</span>こそ、この地の智慧。<br>
+        「伝統 × 生成AI」「祈りの場 × テクノロジー」——この問いに最初に向き合うのに、諏訪以上にふさわしい土地はないと考えています。
+      </p>
+    </div>
+    <div class="slide-num">6 / 16</div>
+  </section>
+
+  <!-- 7: 開催背景 -->
+  <section class="slide">
+    <span class="tag">開催までの背景</span>
+    <div class="msg">
+      <h2>2026年2月、<br><span class="hl">史上初</span>の神仏習合AI勉強会。</h2>
+    </div>
+    <div class="note" style="max-width: 820px;">
+      <span class="note-title">きっかけ</span>
+      <p class="body">
+        諏訪仏教青年会 主催の研修会「生成AIが導く寺社活性の可能性」を、岡谷市・照光寺にて開催。
+        お寺だけでなく<span class="em">諏訪大社の皆さま</span>も一堂に集い、生成AIを共に学ぶ1日となりました。<br>
+        この熱量を1度きりで終わらせず、2日間の集中合宿として企画したのが今回です。
+      </p>
+    </div>
+    <div class="slide-num">7 / 16</div>
+  </section>
+
+  <!-- 8: なぜ現地開催 -->
+  <section class="slide">
+    <span class="tag-outline">なぜ "現地開催" にこだわるのか</span>
+    <div class="msg">
+      <h2>今日から、<span class="hl">寺務で使える</span>状態に。</h2>
+    </div>
+
+    <div class="three-col" style="margin-top: 36px; gap: 36px;">
+      <!-- Card 1: 面 -->
+      <div class="info-card">
+        <div class="badge">01</div>
+        <div class="icon">
+          <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="40" cy="22" r="9"/>
+            <circle cx="18" cy="56" r="9"/>
+            <circle cx="62" cy="56" r="9"/>
+            <line x1="40" y1="31" x2="18" y2="47"/>
+            <line x1="40" y1="31" x2="62" y2="47"/>
+            <line x1="27" y1="56" x2="53" y2="56"/>
+          </svg>
+        </div>
+        <div class="ttl">「面」で進化する</div>
+        <div class="desc">個人単位ではなく、諏訪エリア一丸でAI活用を進める。地域ぐるみのボトムアップを実現する。</div>
+      </div>
+
+      <!-- Card 2: 動いている -->
+      <div class="info-card">
+        <div class="badge">02</div>
+        <div class="icon">
+          <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="14,40 30,56 64,22"/>
+            <circle cx="40" cy="40" r="32"/>
+          </svg>
+        </div>
+        <div class="ttl">今日から寺務で使える状態に</div>
+        <div class="desc">「明日からやろう」ではなく、講義中に手を動かし、その日の寺務に持ち帰れる状態を作る。</div>
+      </div>
+
+      <!-- Card 3: 熱いうちに -->
+      <div class="info-card">
+        <div class="badge">03</div>
+        <div class="icon">
+          <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22 h44 a6 6 0 0 1 6 6 v22 a6 6 0 0 1 -6 6 h-22 l-14 12 v-12 h-8 a6 6 0 0 1 -6 -6 v-22 a6 6 0 0 1 6 -6 z"/>
+            <line x1="22" y1="34" x2="50" y2="34"/>
+            <line x1="22" y1="44" x2="42" y2="44"/>
+          </svg>
+        </div>
+        <div class="ttl">熱いうちに、その場で聞ける</div>
+        <div class="desc">画面越しではなく、つまずいた瞬間に隣で声をかけられる。学びの質が大きく変わる。</div>
+      </div>
+    </div>
+
+    <div class="note" style="max-width: 860px; margin-top: 24px;">
+      <span class="note-title">3つの理由</span>
+      <ul class="body">
+        <li><span class="em">「面」の可能性を信じたい</span> — 個人ではなく地域として進化する</li>
+        <li><span class="em">今日から寺務で使える状態に</span> — 自坊の課題と向き合いながら手を動かす</li>
+        <li><span class="em">詰まった瞬間に、その場で聞ける</span> — 熱いうちに解決できる</li>
+      </ul>
+    </div>
+    <div class="slide-num">8 / 16</div>
+  </section>
+
+  <!-- 9: 2日間で達成したいこと -->
+  <section class="slide">
+    <span class="tag-outline">2日間のゴール</span>
+    <div class="msg">
+      <h2>2日間で、<span class="hl">使いこなす側</span>へ。</h2>
+    </div>
+
+    <div class="four-col" style="margin-top: 36px;">
+      <!-- 01 目的を持って使う -->
+      <div class="info-card">
+        <div class="badge">01</div>
+        <div class="icon">
+          <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="40" cy="40" r="28"/>
+            <circle cx="40" cy="40" r="18"/>
+            <circle cx="40" cy="40" r="6" fill="currentColor"/>
+          </svg>
+        </div>
+        <div class="ttl">目的を持って使う</div>
+        <div class="desc">「なんとなく使う」から脱却。自坊のどの課題に効かせるかを定めて使う。</div>
+      </div>
+
+      <!-- 02 自前で制作する -->
+      <div class="info-card">
+        <div class="badge">02</div>
+        <div class="icon">
+          <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 60 L52 22 L62 32 L24 70 L12 72 Z"/>
+            <line x1="46" y1="28" x2="56" y2="38"/>
+            <line x1="18" y1="56" x2="28" y2="66"/>
+          </svg>
+        </div>
+        <div class="ttl">自前で制作する</div>
+        <div class="desc">画像・PDF・動画・音声などのクリエイティブを外注せず内製化する。</div>
+      </div>
+
+      <!-- 03 実行部隊(AIエージェント) -->
+      <div class="info-card">
+        <div class="badge">03</div>
+        <div class="icon">
+          <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="20" y="26" width="40" height="34" rx="6"/>
+            <circle cx="32" cy="40" r="3" fill="currentColor"/>
+            <circle cx="48" cy="40" r="3" fill="currentColor"/>
+            <line x1="32" y1="52" x2="48" y2="52"/>
+            <line x1="40" y1="14" x2="40" y2="26"/>
+            <circle cx="40" cy="12" r="3" fill="currentColor"/>
+            <line x1="14" y1="44" x2="20" y2="44"/>
+            <line x1="60" y1="44" x2="66" y2="44"/>
+          </svg>
+        </div>
+        <div class="ttl">実行部隊をつくる</div>
+        <div class="desc">壁打ち相手だけでなく、寺社を裏支えするAIエージェントを構築する。</div>
+      </div>
+
+      <!-- 04 AI活用ネットワーク -->
+      <div class="info-card">
+        <div class="badge">04</div>
+        <div class="icon">
+          <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="40" cy="14" r="6"/>
+            <circle cx="14" cy="40" r="6"/>
+            <circle cx="66" cy="40" r="6"/>
+            <circle cx="28" cy="66" r="6"/>
+            <circle cx="52" cy="66" r="6"/>
+            <line x1="40" y1="20" x2="18" y2="36"/>
+            <line x1="40" y1="20" x2="62" y2="36"/>
+            <line x1="18" y1="44" x2="26" y2="60"/>
+            <line x1="62" y1="44" x2="54" y2="60"/>
+            <line x1="32" y1="66" x2="48" y2="66"/>
+          </svg>
+        </div>
+        <div class="ttl">ネットワークをつくる</div>
+        <div class="desc">宗派を越えた諏訪✕AIネットワークを形成し、全国へ広げる起点に。</div>
+      </div>
+    </div>
+
+    <div class="note" style="max-width: 860px; margin-top: 26px;">
+      <span class="note-title">補足</span>
+      <p class="body">
+        4つはバラバラではなく、<span class="em">「目的 → 自前で作る → 実行部隊にする → 仲間と広げる」</span>と段階的につながっています。
+        1日目では①②、2日目では③④を中心に進めます。
+      </p>
+    </div>
+    <div class="slide-num">9 / 16</div>
+  </section>
+
+  <!-- 10: 2日間の流れ -->
+  <section class="slide">
+    <span class="tag">2日間の流れ</span>
+    <div class="msg">
+      <h2>基礎から発展へ、<span class="hl">積み上げ式</span>の構成。</h2>
+    </div>
+    <div class="two-col" style="margin-top:8px;">
+      <div class="note">
+        <span class="note-title">DAY 1 ／ 基礎編</span>
+        <p class="body" style="font-weight:600; font-size:21px; margin-top:4px;">チャット型AIの基礎基本を固める日</p>
+        <p class="sub" style="margin-top:8px;">5/14（木）13:00 – 16:00</p>
+        <ul class="body" style="margin-top:8px;">
+          <li>生成AIの「あたまのなか」を知る</li>
+          <li>ツールの使い分け（ChatGPT/Claude/Gemini/NotebookLM）</li>
+          <li>寺社の専属デザイナー・クリエイターをつくる</li>
+        </ul>
+      </div>
+      <div class="note">
+        <span class="note-title">DAY 2 ／ 発展編</span>
+        <p class="body" style="font-weight:600; font-size:21px; margin-top:4px;">寺社の右腕＝AIエージェントをつくる日</p>
+        <p class="sub" style="margin-top:8px;">5/15（金）11:00 – 15:00</p>
+        <ul class="body" style="margin-top:8px;">
+          <li>AIをチーム化（組織化）してみよう</li>
+          <li>AI用マニュアル（設計書）つくり</li>
+          <li>行事紹介の特設ページを作ってみよう</li>
+        </ul>
+      </div>
+    </div>
+    <div class="slide-num">10 / 16</div>
+  </section>
+
+  <!-- 11: 今日のテーマ -->
+  <section class="slide">
+    <span class="tag">今日（1日目）のテーマ</span>
+    <div class="msg">
+      <h1><span class="hl">寺社のあらゆるシーン</span>で<br>AIが使える、その手触り感を持ち帰る。</h1>
+    </div>
+    <div class="note" style="max-width: 860px;">
+      <span class="note-title">ねらい</span>
+      <p class="body">
+        カンタンですぐに寺社の即戦力になれる「チャット型AI」の基礎基本を整理し、
+        AIを「壁打ち相手」だけでなく<span class="em">画像・PDF・動画・音声</span>まで広げて活用する実践力を養います。<br>
+        今まで諦めていたことを寺社で実現するための1日です。
+      </p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 事例紹介オーバービュー -->
+  <section class="slide">
+    <span class="tag-outline">事例紹介</span>
+    <div class="msg">
+      <h2>お寺で、<span class="hl">こんなこと</span>ができます。</h2>
+    </div>
+    <div class="four-col" style="margin-top: 28px; grid-template-columns: repeat(5, 1fr);">
+      <div class="info-card">
+        <div class="badge">①</div>
+        <div class="ttl" style="margin-top:6px;">知ってもらう（広報）</div>
+        <div class="desc">寺報・SNS・お知らせの発信。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">②</div>
+        <div class="ttl" style="margin-top:6px;">制作・ものつくり</div>
+        <div class="desc">画像・PDF・HP・動画。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">③</div>
+        <div class="ttl" style="margin-top:6px;">業務改善</div>
+        <div class="desc">レポート・メール・予定・TODO。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">④</div>
+        <div class="ttl" style="margin-top:6px;">スキルを拡げる</div>
+        <div class="desc">多言語・同時翻訳。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">⑤</div>
+        <div class="ttl" style="margin-top:6px;">お墓の案内 ほか</div>
+        <div class="desc">参拝・授戒・終活まで。</div>
+      </div>
+    </div>
+    <p class="sub" style="margin-top: 14px;">→ 1つずつ、具体例を見ていきます。</p>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 事例①: 知ってもらう（広報） -->
+  <section class="slide">
+    <span class="tag">事例 ① 知ってもらう（広報）</span>
+    <div class="msg">
+      <h2>AIで、<span class="hl">寺報・SNS</span>の発信を支える。</h2>
+    </div>
+    <div class="two-col" style="margin-top: 24px;">
+      <div class="info-card">
+        <div class="badge">寺報</div>
+        <div class="ttl" style="margin-top:6px;">寺報の作成</div>
+        <div class="desc">原稿の骨子・見出し案・要約・季節の挨拶文まで一気に。過去号を読み込ませてトーンを継承させる工夫も。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">SNS</div>
+        <div class="ttl" style="margin-top:6px;">Instagramの配信運用</div>
+        <div class="desc">投稿ネタ出し → キャプション → ハッシュタグ → 画像案まで。週次運用の負担を大幅に下げられます。</div>
+      </div>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 事例②: 制作・ものつくり -->
+  <section class="slide">
+    <span class="tag">事例 ② 制作・ものつくり</span>
+    <div class="msg">
+      <h2><span class="hl">"つくる"</span>が、寺社内で完結する。</h2>
+    </div>
+    <div class="four-col" style="margin-top: 24px;">
+      <div class="info-card">
+        <div class="badge">画</div>
+        <div class="ttl" style="margin-top:6px;">画像つくり</div>
+        <div class="desc">行事案内・年賀状・看板用素材まで。素材購入や外注に頼らない制作体制に。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">P</div>
+        <div class="ttl" style="margin-top:6px;">PDFつくり</div>
+        <div class="desc">配布資料・申込書・案内冊子。書式の整ったPDFを短時間で。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">HP</div>
+        <div class="ttl" style="margin-top:6px;">HP・ページつくり</div>
+        <div class="desc">行事の特設ページ、永代供養墓ランディング、樹木葬LPなど。ノーコードで内製化。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">動</div>
+        <div class="ttl" style="margin-top:6px;">動画つくり（テロップ入れ）</div>
+        <div class="desc">法話・行事の動画にテロップを自動付与。SNS短尺動画への展開も。</div>
+      </div>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 事例③: 業務改善 -->
+  <section class="slide">
+    <span class="tag">事例 ③ 業務改善</span>
+    <div class="msg">
+      <h2>日々の<span class="hl">事務</span>を、AIに任せる。</h2>
+    </div>
+    <div class="four-col" style="margin-top: 24px;">
+      <div class="info-card">
+        <div class="badge">①</div>
+        <div class="ttl" style="margin-top:6px;">資料を1枚レポートに</div>
+        <div class="desc">複数の議事録・PDFを読み込ませ、「1枚レポート」に要約。理事会・会議用素材に。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">②</div>
+        <div class="ttl" style="margin-top:6px;">メールの下書きを作る</div>
+        <div class="desc">法事リマインド・初盆案内・問い合わせ返信など、定型メールの下書きを高速化。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">③</div>
+        <div class="ttl" style="margin-top:6px;">お寺の予定を管理する</div>
+        <div class="desc">Googleカレンダーと連携して、空き日程の確認・候補日提案・案内文生成まで。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">④</div>
+        <div class="ttl" style="margin-top:6px;">アイデア→TODO化</div>
+        <div class="desc">頭の中の「やりたい」を投げると、AIが整理してTODOリストに落とし込む。</div>
+      </div>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 事例④: スキルを拡げる -->
+  <section class="slide">
+    <span class="tag">事例 ④ スキルを拡げる</span>
+    <div class="msg">
+      <h2>1人で<span class="hl">何でもできる</span>体制へ。</h2>
+    </div>
+    <div class="two-col" style="margin-top: 24px;">
+      <div class="info-card">
+        <div class="badge">語</div>
+        <div class="ttl" style="margin-top:6px;">多言語対応</div>
+        <div class="desc">英語・中国語・韓国語の案内文・サイト翻訳。インバウンド参拝者への案内が瞬時に整う。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">声</div>
+        <div class="ttl" style="margin-top:6px;">同時翻訳（OpenAI realtime-2）</div>
+        <div class="desc">音声をリアルタイムで翻訳。境内ツアー・海外参拝者対応の最前線で使える機能。</div>
+      </div>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 事例⑤: お墓の案内ほか -->
+  <section class="slide">
+    <span class="tag">事例 ⑤ お墓の案内 ほか</span>
+    <div class="msg">
+      <h2>参拝・檀務まで、<span class="hl">広く支える</span>AI。</h2>
+    </div>
+    <div class="note" style="max-width: 900px;">
+      <span class="note-title">具体例</span>
+      <ul class="body">
+        <li>永代供養墓・樹木葬の案内応答（よくある質問への自動回答）</li>
+        <li>お墓のご相談リスト作成・進捗管理</li>
+        <li>境内マップ・スタンプラリーの素材生成</li>
+        <li>檀信徒との接点（LINE）に応答補助を仕込む</li>
+      </ul>
+      <p class="sub" style="margin-top:10px;">→ "やる気と時間"の問題を超えて、寺社が現代の生活者に届く設計が可能になります。</p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 海外事例：韓国 ロボ仏教師 -->
+  <section class="slide">
+    <span class="tag-outline">海外事例</span>
+    <div class="msg">
+      <h2>韓国では、<span class="hl">"ロボ仏教師"</span>が登場。</h2>
+    </div>
+    <div class="note" style="max-width: 900px;">
+      <span class="note-title">概要</span>
+      <p class="body">
+        韓国仏教界では、AI/ロボティクスを使った「ロボ仏教師」が話題に。
+        参拝者の質問に答えたり、説法の補助をしたり——テクノロジーと宗教実践の融合は、すでに海外で始まっています。<br>
+        日本でも、寺社が<span class="em">受け身ではなく主体的に</span>テクノロジーを取り入れる時期に来ています。
+      </p>
+      <p class="sub" style="margin-top:10px;">出典：japanese.joins.com（韓国・中央日報）</p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 課題解決4項目 -->
+  <section class="slide">
+    <span class="tag">課題解決</span>
+    <div class="msg">
+      <h2>これまでの<span class="hl">4つの壁</span>が、ほぼ無くなる。</h2>
+    </div>
+    <div class="four-col" style="margin-top: 28px;">
+      <div class="info-card">
+        <div class="badge">時間</div>
+        <div class="ttl" style="margin-top:6px;">時間の問題</div>
+        <div class="desc" style="color: #2ea043; font-weight:700;">→ クリア</div>
+        <div class="desc">数時間の作業が数分に。寺報・チラシ・メール下書きが圧倒的に速くなる。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">人</div>
+        <div class="ttl" style="margin-top:6px;">人・リソースの問題</div>
+        <div class="desc" style="color: #2ea043; font-weight:700;">→ クリア</div>
+        <div class="desc">1人でも、デザイナー・ライター・編集者の役割をAIと分担できる。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">¥</div>
+        <div class="ttl" style="margin-top:6px;">コスト・お金の問題</div>
+        <div class="desc" style="color: #2ea043; font-weight:700;">→ ほぼクリア</div>
+        <div class="desc">無料プラン中心で十分。最低限の有料化で大半の業務がカバーできる。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">知</div>
+        <div class="ttl" style="margin-top:6px;">知識・アイデアの問題</div>
+        <div class="desc" style="color: #c0392b; font-weight:700;">→ 学ぶ気持ち次第</div>
+        <div class="desc">残るのは「やるかどうか」だけ。最後の壁は、技術ではなく姿勢の問題。</div>
+      </div>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 12: 想定モヤモヤ -->
+  <section class="slide">
+    <span class="tag-outline">想定される、3つのモヤモヤ</span>
+    <div class="msg">
+      <h2>このモヤモヤに、<span class="hl">今日ひと区切り</span>。</h2>
+    </div>
+    <div>
+      <div class="question">①「ChatGPT、Claude、Gemini… <span class="hl">どれを使えばいい？</span>」</div>
+      <p class="question-answer">→ 使い分けと、ツールに固執しないしなやかさを身につける</p>
+    </div>
+    <div style="margin-top:16px;">
+      <div class="question">②「AIってあまり<span class="hl">信用ならない</span>でしょ」</div>
+      <p class="question-answer">→ 回答生成のしくみを知り、「育てれば信頼できる」感覚をつかむ</p>
+    </div>
+    <div style="margin-top:16px;">
+      <div class="question">③「寺社で使えるイメージが<span class="hl">持てない</span>」</div>
+      <p class="question-answer">→ 実際のユースケースを詳しく紹介します</p>
+    </div>
+    <div class="slide-num">12 / 16</div>
+  </section>
+
+  <!-- 13: 問い -->
+  <section class="slide">
+    <span class="tag tag-green" style="align-self:center;">問い</span>
+    <div class="quote-big" style="margin-top:16px;">
+      最近、AIで<br><span class="hl">何を作りました</span>か？
+    </div>
+    <div class="note" style="max-width: 640px; margin: 28px auto 0;">
+      <p class="body" style="text-align:center;">
+        作ったもの・試したことを思い出して、<br>近くの方とシェアしてみてください。
+      </p>
+    </div>
+    <div class="slide-num">13 / 16</div>
+  </section>
+
+  <!-- 14: 今日の成果物 -->
+  <section class="slide">
+    <span class="tag">今日の成果物</span>
+    <div class="msg">
+      <h1>お寺の<span class="hl">案内チラシ</span>を作る。</h1>
+    </div>
+    <div class="note" style="max-width: 820px;">
+      <span class="note-title">バリエーション</span>
+      <ul class="body">
+        <li>あらゆる寺務でAIを活用できることを知る</li>
+        <li>お寺を伝える<span class="em">インフォグラフィック</span></li>
+        <li>1枚もの（ペラ）の案内チラシ</li>
+      </ul>
+      <p class="sub" style="margin-top:10px;">→ 無料ツール中心で、初心者でも持ち帰れる成果物を目指します。</p>
+    </div>
+    <div class="slide-num">14 / 16</div>
+  </section>
+
+  <!-- 15: 進め方 -->
+  <section class="slide">
+    <span class="tag">今日の進め方</span>
+    <div class="msg">
+      <h2>一緒にPCを開いて、<span class="hl">手を動かしながら</span>進めます。</h2>
+    </div>
+    <div class="note" style="max-width: 860px;">
+      <span class="note-title">お願い</span>
+      <ul class="body">
+        <li>講義 → ワーク → シェア の繰り返しで進行します</li>
+        <li>詰まったら<span class="em">旗をあげて</span>ください（その場で解決します）</li>
+        <li>写真撮影が入ります（NGの方は事前にお声がけください）</li>
+      </ul>
+    </div>
+    <div class="slide-num">15 / 16</div>
+  </section>
+
+  <!-- 16: 付箋ワーク① -->
+  <section class="slide">
+    <span class="tag tag-green">付箋ワーク ①</span>
+    <div class="msg">
+      <h1>今日<span class="hl">解消したいこと</span>を<br>書いてシェア。</h1>
+    </div>
+    <div class="note" style="max-width: 820px;">
+      <span class="note-title">進め方</span>
+      <ul class="body">
+        <li>「AIでこれがモヤモヤしている／これを解決したい」を付箋に1枚ずつ</li>
+        <li>記入：3分　／　シェア：2分（近くの方と）</li>
+      </ul>
+      <p class="sub" style="margin-top:10px;">→ 今日の講義中、自分の課題に当てはめながら聞いていきましょう。</p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- ============================== -->
+  <!-- CHAPTER 1: AIツールの種類・使い分け -->
+  <!-- ============================== -->
+
+  <!-- Ch1 表紙 -->
+  <section class="slide chapter">
+    <div class="ch-num">CHAPTER 1</div>
+    <div class="ch-bar"></div>
+    <div class="ch-title">AIツールの<br><span class="hl">種類と使い分け</span></div>
+    <div class="ch-sub">どのAIを、どの場面で、どう使い分けるか。<br>"何を使えばいい？"のモヤモヤに、ひと区切りつけます。</div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- Ch1 補足: AIの進化はとても早い -->
+  <section class="slide">
+    <span class="tag-outline">【補足】はじめに</span>
+    <div class="msg">
+      <h2>AIの進化は、<span class="hl">とても早い</span>。</h2>
+    </div>
+    <div style="display:flex; justify-content:center; margin: 8px 0 16px;">
+      <div style="width: 100px; height: 90px; position: relative;">
+        <svg viewBox="0 0 100 90" width="100" height="90" style="display:block;">
+          <polygon points="50,8 96,82 4,82" fill="#f5c518" stroke="#1a1a1a" stroke-width="3" stroke-linejoin="round"/>
+          <rect x="46" y="32" width="8" height="22" fill="#1a1a1a"/>
+          <circle cx="50" cy="66" r="4" fill="#1a1a1a"/>
+        </svg>
+      </div>
+    </div>
+    <div class="note" style="max-width: 900px;">
+      <span class="note-title">前提として</span>
+      <ul class="body">
+        <li>本日お伝えする情報は、あくまで<span class="em">「今日現在」</span>のもの</li>
+        <li>半年・1年で勢力図が変わる世界。ツールや機能名は<span class="em">いずれ古くなる</span>前提で</li>
+        <li>大切なのは<span class="em">ゆるくでも「使える情報」をキャッチし続ける</span>姿勢</li>
+      </ul>
+      <p class="sub" style="margin-top: 10px;">→ 細部より、根っこの「使い方」「考え方」を持ち帰っていただければ。</p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- Ch1: AIは3つに分かれる（=3レベル） -->
+  <section class="slide">
+    <span class="tag">1-1. AIのカテゴリを理解する</span>
+    <div class="msg">
+      <h2>AIは、大きく<span class="hl">3つのレベル</span>に分かれる。</h2>
+    </div>
+    <div class="three-col" style="margin-top: 36px; gap: 30px;">
+      <div class="info-card">
+        <div class="badge">Lv.1</div>
+        <div class="icon">
+          <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 22 h52 a4 4 0 0 1 4 4 v26 a4 4 0 0 1 -4 4 h-30 l-12 10 v-10 h-10 a4 4 0 0 1 -4 -4 v-26 a4 4 0 0 1 4 -4 z"/>
+            <line x1="24" y1="34" x2="56" y2="34"/>
+            <line x1="24" y1="44" x2="48" y2="44"/>
+          </svg>
+        </div>
+        <div class="ttl">AIチャット<br>＝ <span class="hl">コンサルタント</span></div>
+        <div class="desc">質問・要約・翻訳・壁打ち。対話で答えを返す段階。<br>例：ChatGPT / Claude / Gemini</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">Lv.2</div>
+        <div class="icon">
+          <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="14" y="18" width="52" height="44" rx="4"/>
+            <line x1="14" y1="30" x2="66" y2="30"/>
+            <circle cx="58" cy="46" r="6"/>
+            <line x1="50" y1="46" x2="32" y2="46"/>
+          </svg>
+        </div>
+        <div class="ttl">業務アプリ内のAI<br>＝ <span class="hl">助手</span></div>
+        <div class="desc">ツールに内包されたAI機能。人間が主役、AIは横で手伝う。<br>例：Gmail内のGemini / Excel内のCopilot</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">Lv.3</div>
+        <div class="icon">
+          <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="22" y="26" width="36" height="30" rx="4"/>
+            <circle cx="32" cy="40" r="2.5" fill="currentColor"/>
+            <circle cx="48" cy="40" r="2.5" fill="currentColor"/>
+            <line x1="34" y1="50" x2="46" y2="50"/>
+            <line x1="40" y1="14" x2="40" y2="26"/>
+            <circle cx="40" cy="12" r="2.5" fill="currentColor"/>
+            <line x1="14" y1="44" x2="22" y2="44"/>
+            <line x1="58" y1="44" x2="66" y2="44"/>
+          </svg>
+        </div>
+        <div class="ttl">自律型AIエージェント<br>＝ <span class="hl">仕事を完了する</span></div>
+        <div class="desc">「これやっといて」で複数ステップを実行。読む→分析→作る→保存まで一気通貫。<br>例：Cowork / Claude Code</div>
+      </div>
+    </div>
+    <div class="note" style="max-width: 900px; margin-top: 22px;">
+      <span class="note-title">注意点</span>
+      <p class="body">
+        メディアやベンダーが「AIエージェント」と呼ぶものの<span class="em">大半はLv.1〜2</span>。<br>
+        Lv.3を実際に業務で使っている寺社は、まだ少数派（ほぼない）。<br>
+        まずLv.1〜2を使いこなして、2日目でLv.3に踏み込みます。
+      </p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- Ch1: Lv.1 詳細 -->
+  <section class="slide">
+    <span class="tag">Lv.1 詳細</span>
+    <div class="msg">
+      <h2>Lv.1：AIチャット ＝ <span class="hl">コンサルタント</span>。</h2>
+    </div>
+    <div class="note" style="max-width: 900px;">
+      <span class="note-title">特徴</span>
+      <ul class="body">
+        <li>質問すると答えてくれる対話型</li>
+        <li>テキストの生成・要約・翻訳・壁打ち</li>
+        <li>多くの「AI導入しました」はこのレベル</li>
+      </ul>
+      <p class="body" style="margin-top: 10px;">
+        例：ChatGPT / Claude / Gemini。<span class="em">相談相手・優秀なコンサルタント</span>として、思考整理・原稿作成・調査の入口に使う段階。
+      </p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- Ch1: Lv.2 詳細 -->
+  <section class="slide">
+    <span class="tag">Lv.2 詳細</span>
+    <div class="msg">
+      <h2>Lv.2：業務アプリ内の<span class="hl">助手</span>。</h2>
+    </div>
+    <div class="note" style="max-width: 900px;">
+      <span class="note-title">特徴</span>
+      <ul class="body">
+        <li>よく使うツールに内包されているAI機能</li>
+        <li>例：GeminiがGmail内でメール下書き／Excel内でデータ分析</li>
+        <li>業務の中でAIが「補助」してくれるレベル</li>
+      </ul>
+      <p class="body" style="margin-top: 10px;">
+        便利だが、<span class="em">人間が操作の主体</span>。AIはあくまで助手として、横に座って手伝う存在です。
+      </p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- Ch1: Lv.3 詳細 -->
+  <section class="slide">
+    <span class="tag">Lv.3 詳細</span>
+    <div class="msg">
+      <h2>Lv.3：<span class="hl">「仕事を完了する」</span>AI。</h2>
+    </div>
+    <div class="note" style="max-width: 900px;">
+      <span class="note-title">特徴</span>
+      <ul class="body">
+        <li>「これやっといて」と頼むと、AIが自分で考えて、複数ステップを実行</li>
+        <li>ファイルを読む → 分析する → グラフを作る → レポートにまとめる → 保存する、を一気通貫</li>
+        <li>「答える」ではなく「<span class="em">仕事を完了する</span>」</li>
+        <li>Cowork・Claude Codeがこのレベル</li>
+      </ul>
+      <p class="sub" style="margin-top: 10px;">→ Lv.3を実際に業務で使っている寺社はまだ少数派（ほぼない）。2日目で扱います。</p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- Ch1: 用途別ツール -->
+  <section class="slide">
+    <span class="tag">1-2. おすすめAIツール</span>
+    <div class="msg">
+      <h2>"作りたいもの" 別に、<span class="hl">得意なAI</span>がある。</h2>
+    </div>
+    <div class="four-col" style="margin-top: 32px; grid-template-columns: repeat(5, 1fr);">
+      <div class="info-card">
+        <div class="badge">声</div>
+        <div class="icon">
+          <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="32" y="14" width="16" height="32" rx="8"/>
+            <path d="M20 40 v4 a20 20 0 0 0 40 0 v-4"/>
+            <line x1="40" y1="64" x2="40" y2="72"/>
+          </svg>
+        </div>
+        <div class="ttl">音声化</div>
+        <div class="desc">ElevenLabs。多言語対応の読み上げ・ナレーション。境内ガイドにも。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">楽</div>
+        <div class="icon">
+          <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="22" cy="56" r="8"/>
+            <circle cx="56" cy="50" r="8"/>
+            <line x1="30" y1="56" x2="30" y2="22"/>
+            <line x1="64" y1="50" x2="64" y2="16"/>
+            <line x1="30" y1="22" x2="64" y2="16"/>
+          </svg>
+        </div>
+        <div class="ttl">音楽生成</div>
+        <div class="desc">Suno など。動画BGMや行事の入場曲を量産。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">画</div>
+        <div class="icon">
+          <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="12" y="16" width="56" height="42" rx="4"/>
+            <circle cx="26" cy="30" r="4"/>
+            <polyline points="12,52 30,38 48,50 68,32"/>
+          </svg>
+        </div>
+        <div class="ttl">画像生成</div>
+        <div class="desc">nano-banana / ChatGPT。チラシ素材、合成・編集まで。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">知</div>
+        <div class="icon">
+          <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 18 h22 a8 8 0 0 1 8 8 v40 a8 8 0 0 0 -8 -8 h-22 z"/>
+            <path d="M64 18 h-22 a8 8 0 0 0 -8 8 v40 a8 8 0 0 1 8 -8 h22 z"/>
+          </svg>
+        </div>
+        <div class="ttl">知識格納</div>
+        <div class="desc">NotebookLM。寺報PDFや経典資料を読み込ませ、根拠付きで回答。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">字</div>
+        <div class="icon">
+          <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="12" y="16" width="56" height="42" rx="4"/>
+            <polygon points="34,28 50,38 34,48" fill="currentColor" stroke="none"/>
+            <line x1="20" y1="58" x2="60" y2="58"/>
+          </svg>
+        </div>
+        <div class="ttl">テロップ付け</div>
+        <div class="desc">Vrew。動画の文字起こしから自動テロップまで一気通貫。</div>
+      </div>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- Ch1: ナイトウのAI利用遍歴 -->
+  <section class="slide">
+    <span class="tag-outline">＋α ナイトウのこれまでのAI利用遍歴</span>
+    <div class="msg">
+      <h2>"使い倒し"の中で<span class="hl">見えてきたこと</span>。</h2>
+    </div>
+    <div class="note" style="max-width: 900px;">
+      <span class="note-title">経緯と気づき</span>
+      <ul class="body">
+        <li>毎日<span class="em">10時間</span>くらいAIを動かしている（PC・スマホ・実験まで）</li>
+        <li>今のタイミングで「うまく使う」ことが、いちばんの投資だと感じている</li>
+        <li>テンプレ・他人のプロンプトを<span class="em">そのまま使っても意味がない</span>。自分用にカスタムするのが鍵</li>
+        <li>「動かす → 失敗する → 落とし込む」を徹底的に繰り返す</li>
+      </ul>
+      <p class="sub" style="margin-top:10px;">→ AIツールはどんどん変わる。だからこそ、変わっても残る"使い方の体感"を持っておく。</p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- Ch1: ググる → AIに聞く -->
+  <section class="slide">
+    <span class="tag">1-3. AIとのつきあい方</span>
+    <div class="msg">
+      <h2>「ググる」から、<span class="hl">「AIに聞く」</span>へ。</h2>
+    </div>
+    <div class="note" style="max-width: 880px;">
+      <span class="note-title">考え方</span>
+      <p class="body">
+        たいていのことは、AIがそばに寄り添って答えてくれる時代。<br>
+        検索結果を読み比べる前に、まずAIに聞いてみる。それで足りない時に検索を補助に使う、という順番に変わってきています。<br>
+        <span class="em">最初に聞く相手をAIに替える</span>だけで、情報収集の時間は大きく短縮できます。
+      </p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- Ch1 Q1: 課金すべき？ -->
+  <section class="slide">
+    <span class="tag-outline">よくある質問 ①</span>
+    <div class="msg">
+      <h2>「課金したほうがいい？」<br>→ 結論、<span class="hl">基本はNO</span>。</h2>
+    </div>
+    <div class="three-col" style="margin-top: 28px;">
+      <div class="info-card">
+        <div class="badge">①</div>
+        <div class="ttl" style="margin-top: 6px;">モデル差はほぼない</div>
+        <div class="desc">無料モデルでも寺社業務の8〜9割は十分こなせる。「モデル差を埋めるための課金」は不要。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">②</div>
+        <div class="ttl" style="margin-top: 6px;">頻度レベルによる</div>
+        <div class="desc">毎日業務で長く使う・大量のファイルを処理する場合のみ、有料プランを検討。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">③</div>
+        <div class="ttl" style="margin-top: 6px;">セキュリティ・利用制限</div>
+        <div class="desc">学習されない設定、利用上限、データ管理。無料/有料で何が違うかを把握してから判断。</div>
+      </div>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- Ch1 Q2: 乗り換え -->
+  <section class="slide">
+    <span class="tag-outline">よくある質問 ②</span>
+    <div class="msg">
+      <h2>「乗り換えたら<span class="hl">記憶もなくなる</span>？」<br>→ AIは乗り換え前提で考える。</h2>
+    </div>
+    <div class="note" style="max-width: 900px;">
+      <span class="note-title">考え方</span>
+      <ul class="body">
+        <li>今日お伝えする内容も、半年後には変わっているかもしれない</li>
+        <li>契約は<span class="em">月額</span>がおすすめ（年額は乗り換えできなくなる）</li>
+        <li><span class="em">記憶と仕様は引き継げる</span>ようにしておく（仕様書・参照ファイルの保存）</li>
+      </ul>
+      <p class="body" style="margin-top: 10px;">
+        ツールに縛られず、必要な時に乗り換えられる準備をしておくことが、長く使い続けるコツです。
+      </p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- Ch1 Q3: なぜ嘘をつく？ -->
+  <section class="slide">
+    <span class="tag-outline">よくある質問 ③</span>
+    <div class="msg">
+      <h2>「なぜ嘘をつくの？」<br>→ <span class="hl">指示と情報</span>に原因がある。</h2>
+    </div>
+    <div class="three-col" style="margin-top: 28px;">
+      <div class="info-card">
+        <div class="badge">原因1</div>
+        <div class="ttl" style="margin-top: 6px;">指示文が曖昧</div>
+        <div class="desc">「いい感じに」「適当に」など、何を求めているかが伝わらない指示は推測で埋められる。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">原因2</div>
+        <div class="ttl" style="margin-top: 6px;">情報が少ない</div>
+        <div class="desc">前提情報がなければ、世間の一般論で答えるしかない。自坊の事情を渡せていない。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">寺社</div>
+        <div class="ttl" style="margin-top: 6px;">寺社特有のリスク</div>
+        <div class="desc">同姓同名の寺院・宗派の混合など、AIが間違えやすい領域がある。固有情報の渡し方が鍵。</div>
+      </div>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- Ch1: ツールごとに思想が違う -->
+  <section class="slide">
+    <span class="tag">1-4. ツールの個性</span>
+    <div class="msg">
+      <h2>AIには、<span class="hl">それぞれの個性</span>がある。</h2>
+    </div>
+    <div class="two-col" style="margin-top: 28px;">
+      <div class="info-card">
+        <div class="badge">CG</div>
+        <div class="ttl" style="margin-top:6px;">ChatGPT ＝ キャバ嬢</div>
+        <div class="desc">褒めて乗せて、会話を盛り上げる。発想広げ・雑談・とりあえずの下書きが得意。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">CL</div>
+        <div class="ttl" style="margin-top:6px;">Claude ＝ クールな学者</div>
+        <div class="desc">論理的に整理し、長文の構造化が得意。仕様書・手順書・分析向き。</div>
+      </div>
+    </div>
+    <div class="note" style="max-width: 900px; margin-top: 22px;">
+      <span class="note-title">使い分け</span>
+      <p class="body">
+        同じ質問でも、答えの色味が違います。1つに固執せず、<span class="em">目的に合わせて使い分ける</span>のが現実解です。
+        Geminiは<span class="em">Google連携</span>が強い、など他にもそれぞれ得意領域があります。
+      </p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- Ch1: 事前情報の入れ込み -->
+  <section class="slide">
+    <span class="tag">1-5. 事前情報がすべて</span>
+    <div class="msg">
+      <h2>記憶は消える。だから、<span class="hl">参照をつくる</span>。</h2>
+    </div>
+    <div class="note" style="max-width: 900px;">
+      <span class="note-title">考え方</span>
+      <p class="body">
+        AIとのやり取りは、時間とともに消えていきます。毎回最初から自坊の説明をするのは非効率。<br>
+        消えないように<span class="em">「参照」</span>＝AIがいつでも読み込める情報置き場を用意するのがコツ。<br>
+        プロジェクト機能やDocumentを使い、「お寺の情報」「お墓」「行事」「自坊の方針」を1箇所にまとめておきます。
+      </p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- Ch1: プロジェクト機能✕Document -->
+  <section class="slide">
+    <span class="tag-outline">おすすめ：プロジェクト機能 ✕ Document</span>
+    <div class="msg">
+      <h2>会話を<span class="hl">フォルダで束ねる</span>。</h2>
+    </div>
+    <div class="note" style="max-width: 900px;">
+      <span class="note-title">仕組み</span>
+      <ul class="body">
+        <li>ChatGPT/Claudeの<span class="em">プロジェクト機能</span>を使うと、会話スレッドをフォルダで束ねられる</li>
+        <li>そのフォルダ内の会話は<span class="em">共通の指示（プロンプト）</span>で動く</li>
+        <li>「お寺の基本情報」「お墓」「行事」など、用途別にフォルダを切るのがおすすめ</li>
+      </ul>
+      <p class="body" style="margin-top:10px;">
+        会話ごとに毎回自坊の説明をしなくていい状態をつくるのが、一番効きます。
+      </p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- Ch1 Work: 仕様書 4枚 -->
+  <section class="slide">
+    <span class="tag tag-green">ワーク：仕様書を作ってみよう</span>
+    <div class="msg">
+      <h2>自坊用に、<span class="hl">4枚の仕様書</span>を準備。</h2>
+    </div>
+    <div class="four-col" style="margin-top: 36px;">
+      <div class="info-card">
+        <div class="badge">①</div>
+        <div class="ttl" style="margin-top: 6px;">お寺について</div>
+        <div class="desc">宗派・歴史・本尊・所在地・住職プロフィール・基本方針など。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">②</div>
+        <div class="ttl" style="margin-top: 6px;">お寺の情報</div>
+        <div class="desc">参拝時間・連絡先・アクセス・駐車場・写真撮影の可否など。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">③</div>
+        <div class="ttl" style="margin-top: 6px;">お墓について</div>
+        <div class="desc">永代供養墓・樹木葬・区画情報・料金・申し込み手順など。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">④</div>
+        <div class="ttl" style="margin-top: 6px;">行事情報</div>
+        <div class="desc">年間スケジュール・主な行事の趣旨・参加方法。なければ作る。</div>
+      </div>
+    </div>
+    <p class="sub" style="margin-top: 20px;">→ この4枚があるだけで、AIの回答精度は段違いに上がります。</p>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- Ch1: 付箋ワーク② -->
+  <section class="slide">
+    <span class="tag tag-green">付箋ワーク ②</span>
+    <div class="msg">
+      <h1>ここまでの<span class="hl">学びのメモ</span>。</h1>
+    </div>
+    <div class="note" style="max-width: 820px;">
+      <span class="note-title">進め方</span>
+      <ul class="body">
+        <li>1章で「知ったこと」「気づいたこと」を付箋に書き出し</li>
+        <li>記入：3分　／　シェア：2分（近くの方と）</li>
+      </ul>
+      <p class="sub" style="margin-top:10px;">→ 終わったら小休憩を挟みます。</p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 小休憩 -->
+  <section class="slide">
+    <div class="msg" style="text-align:center;">
+      <h1 style="font-size:80px;">☕ <span class="hl">小休憩</span></h1>
+    </div>
+    <p class="lead" style="text-align:center; margin-top:24px; color: var(--text-sub);">
+      お手洗い・お飲み物・SNSなど、ご自由に。<br>
+      <span class="em">10分後</span>、再開します。
+    </p>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 質問の工夫（小休憩明け） -->
+  <section class="slide">
+    <span class="tag-outline">質問の工夫 ♪</span>
+    <div class="msg">
+      <h2>"AIに、<span class="hl">自分に聞きながら進めて</span>"と頼む。</h2>
+    </div>
+    <div class="note" style="max-width: 900px;">
+      <span class="note-title">テクニック</span>
+      <ul class="body">
+        <li>「分からないことは私に聞きながら進めて」と指示しておくと、AIが要件を質問してくれる</li>
+        <li>完璧な指示文を書こうとしなくていい — AIとの対話で要件を固めていく</li>
+        <li>逆に注意：<span class="em">「パワハラプロンプト」</span>という概念も。強い命令口調はAIの萎縮（無難な回答）を招くことがある</li>
+      </ul>
+      <p class="sub" style="margin-top:10px;">→ AIは"叱る"より"対話"で引き出す。</p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- ============================== -->
+  <!-- CHAPTER 2: 信頼おける相棒・助手にするために〜AIを育てる〜 -->
+  <!-- ============================== -->
+
+  <!-- Ch2 表紙 -->
+  <section class="slide chapter">
+    <div class="ch-num">CHAPTER 2</div>
+    <div class="ch-bar"></div>
+    <div class="ch-title">信頼おける<br><span class="hl">相棒・助手</span>に。<br>〜AIを育てる〜</div>
+    <div class="ch-sub">「使う」だけで終わらせない。<br>つなげて、記録して、育てる。<br>—— 自坊専属のAIへ。</div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- Ch2: AIを育てる4手順 -->
+  <section class="slide">
+    <span class="tag">2-1. AIを育てる手順</span>
+    <div class="msg">
+      <h2>AIを育てるには、<span class="hl">4つのステップ</span>。</h2>
+    </div>
+    <div class="four-col" style="margin-top: 36px;">
+      <div class="info-card">
+        <div class="badge">01</div>
+        <div class="icon">
+          <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 22 h40 a4 4 0 0 1 4 4 v22 a4 4 0 0 1 -4 4 h-22 l-10 8 v-8 h-8 a4 4 0 0 1 -4 -4 v-22 a4 4 0 0 1 4 -4 z"/>
+          </svg>
+        </div>
+        <div class="ttl">使う</div>
+        <div class="desc">まずは触る。質問・要約・下書きから。「AIで何ができるか」を体感する段階。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">02</div>
+        <div class="icon">
+          <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="20" cy="40" r="10"/>
+            <circle cx="60" cy="40" r="10"/>
+            <line x1="30" y1="40" x2="50" y2="40"/>
+          </svg>
+        </div>
+        <div class="ttl">つなげる（コネクタ）</div>
+        <div class="desc">Googleカレンダー・Gmail・Driveなどと接続。AIに"目と手"を与える段階。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">03</div>
+        <div class="icon">
+          <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="20" y="14" width="40" height="52" rx="3"/>
+            <line x1="28" y1="28" x2="52" y2="28"/>
+            <line x1="28" y1="38" x2="52" y2="38"/>
+            <line x1="28" y1="48" x2="44" y2="48"/>
+          </svg>
+        </div>
+        <div class="ttl">記録する</div>
+        <div class="desc">ドキュメントとフィードバックを残す。AIに「自坊の知識」を蓄積していく段階。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">04</div>
+        <div class="icon">
+          <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M40 58 v-30"/>
+            <path d="M40 28 c -10 -8 -22 -4 -22 6 c 0 8 10 10 22 -2"/>
+            <path d="M40 28 c 10 -8 22 -4 22 6 c 0 8 -10 10 -22 -2"/>
+            <ellipse cx="40" cy="62" rx="14" ry="4"/>
+          </svg>
+        </div>
+        <div class="ttl">育てる</div>
+        <div class="desc">指示書を磨き、専属化していく。寺社専属のAIに育てる段階。</div>
+      </div>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- Ch2: 大切なのは1日の棚卸し -->
+  <section class="slide">
+    <span class="tag">2-2. 実使用に落とすコツ</span>
+    <div class="msg">
+      <h2>大切なのは、<span class="hl">1日の棚卸し</span>。</h2>
+    </div>
+    <div class="note" style="max-width: 900px;">
+      <span class="note-title">考え方</span>
+      <ul class="body">
+        <li><span class="em">「小さく」「部分的なところから」</span>始める</li>
+        <li>すべてを一気にAIに任せようとしない</li>
+        <li>例：塔婆申込み状況を記録してレポートする</li>
+      </ul>
+      <p class="body" style="margin-top: 10px;">
+        日々の業務を眺めて「これ、面倒だな」と思う作業を1つ、AIに渡してみる。
+        効果を感じたら、次の1つを足していく。これが続けるコツです。
+      </p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- Ch2: 事例再掲（やったこと→成果） -->
+  <section class="slide">
+    <span class="tag-outline">事例再掲：やったこと → 成果</span>
+    <div class="msg">
+      <h2>"小さく始めて"<span class="hl">こんな成果</span>が出ています。</h2>
+    </div>
+    <div class="three-col" style="margin-top: 28px;">
+      <div class="info-card">
+        <div class="badge">事例</div>
+        <div class="ttl" style="margin-top:6px;">寺報の作成</div>
+        <div class="desc"><span class="em">やった：</span>過去号PDFをAIに読み込ませて新号の骨子作成<br><span class="em">成果：</span>原稿初稿が約90%自動化、編集時間が1/3に。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">事例</div>
+        <div class="ttl" style="margin-top:6px;">塔婆申込み管理</div>
+        <div class="desc"><span class="em">やった：</span>申込み記録の入力→AIで月次レポート化<br><span class="em">成果：</span>承継・回向状況が一覧化、漏れがゼロに。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">事例</div>
+        <div class="ttl" style="margin-top:6px;">案内チラシの量産</div>
+        <div class="desc"><span class="em">やった：</span>仕様書をAIに渡して年間6本のチラシを内製<br><span class="em">成果：</span>外注費を年間で大幅削減、配布スピードも向上。</div>
+      </div>
+    </div>
+    <p class="sub" style="margin-top: 18px;">→ 大きな1個より、<span class="em">小さな複数</span>のほうが、定着しやすい。</p>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- Ch2: 「実使用」に落とす3つの原則 -->
+  <section class="slide">
+    <span class="tag-outline">「実使用」に落とすための3原則</span>
+    <div class="msg">
+      <h2>AI活用は、<span class="hl">この3つ</span>が土台。</h2>
+    </div>
+    <div class="three-col" style="margin-top: 36px;">
+      <div class="info-card">
+        <div class="badge">①</div>
+        <div class="icon">
+          <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+            <ellipse cx="40" cy="20" rx="22" ry="6"/>
+            <path d="M18 20 v18 c0 3.3 9.85 6 22 6 s22 -2.7 22 -6 v-18"/>
+            <path d="M18 38 v18 c0 3.3 9.85 6 22 6 s22 -2.7 22 -6 v-18"/>
+          </svg>
+        </div>
+        <div class="ttl">情報データベースを構築する</div>
+        <div class="desc">経歴・価値観・ストーリー・事業内容・文章の書き方など、自分や自坊を構成する情報を1箇所にまとめておく。場所はDrive/Dropbox/PCフォルダ、どれでもOK。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">②</div>
+        <div class="icon">
+          <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="22" cy="40" r="10"/>
+            <circle cx="58" cy="40" r="10"/>
+            <line x1="32" y1="40" x2="48" y2="40"/>
+            <line x1="40" y1="32" x2="40" y2="48"/>
+          </svg>
+        </div>
+        <div class="ttl">AIとデータベースを連携する</div>
+        <div class="desc">AIが「あなたを全て分かった状態」で動くようにする。何もないところから作るのとは段違いの精度に。連携方法はAI自身に聞けば教えてくれる。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">③</div>
+        <div class="icon">
+          <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="40" cy="40" r="28"/>
+            <circle cx="40" cy="40" r="16"/>
+            <circle cx="40" cy="40" r="6" fill="currentColor"/>
+          </svg>
+        </div>
+        <div class="ttl">何をしたいかを明確にする</div>
+        <div class="desc">「結局あなたはAIを使って何をしたいんですか？」——いちばん本質。AIはツール。目的がなければ定着しない。最初に目的を必ず明確に。</div>
+      </div>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- Ch2: コネクタ -->
+  <section class="slide">
+    <span class="tag tag-green">コネクタさせてみよう</span>
+    <div class="msg">
+      <h2>AIに、<span class="hl">予定・メール・PDF</span>を任せる。</h2>
+    </div>
+    <div class="three-col" style="margin-top: 36px;">
+      <div class="info-card">
+        <div class="badge">予定</div>
+        <div class="icon">
+          <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="14" y="20" width="52" height="46" rx="3"/>
+            <line x1="14" y1="32" x2="66" y2="32"/>
+            <line x1="26" y1="14" x2="26" y2="26"/>
+            <line x1="54" y1="14" x2="54" y2="26"/>
+            <rect x="22" y="40" width="10" height="8" fill="currentColor" stroke="none"/>
+          </svg>
+        </div>
+        <div class="ttl">Googleカレンダー ✕ メモ</div>
+        <div class="desc">「来月の年回忌候補日を出して」「○月のイベント一覧をまとめて」など、予定の把握と整理を一気通貫で。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">送信</div>
+        <div class="icon">
+          <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="12" y="20" width="56" height="40" rx="3"/>
+            <polyline points="12,24 40,46 68,24"/>
+          </svg>
+        </div>
+        <div class="ttl">メールの下書きを作る</div>
+        <div class="desc">「来週の法事リマインドをこの檀家さん向けに」「初盆案内の文面を3案」など、文面づくりの初動を任せる。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">変換</div>
+        <div class="icon">
+          <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="14" y="18" width="22" height="30" rx="2"/>
+            <rect x="44" y="32" width="22" height="30" rx="2"/>
+            <path d="M36 32 l8 0"/>
+            <polyline points="40,28 44,32 40,36"/>
+            <line x1="20" y1="26" x2="30" y2="26"/>
+            <line x1="20" y1="34" x2="30" y2="34"/>
+            <line x1="50" y1="44" x2="60" y2="44"/>
+            <line x1="50" y1="52" x2="60" y2="52"/>
+          </svg>
+        </div>
+        <div class="ttl">PDFをExcelにまとめる</div>
+        <div class="desc">紙やPDFで届く資料を、Excel/スプレッドシートの行列に整理。集計・分析の入口を自動化する。</div>
+      </div>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- ============================== -->
+  <!-- CHAPTER 3: 寺社の専属デザイナー・クリエイター -->
+  <!-- ============================== -->
+
+  <!-- Ch3 表紙 -->
+  <section class="slide chapter">
+    <div class="ch-num">CHAPTER 3</div>
+    <div class="ch-bar"></div>
+    <div class="ch-title">寺社の<br><span class="hl">専属デザイナー</span>を<br>つくる</div>
+    <div class="ch-sub">"頭"だけでなく"手足"を動かしてくれるAIへ。<br>案内チラシを実際に作りながら、感覚をつかみます。</div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- Ch3: 課題 -->
+  <section class="slide">
+    <span class="tag">3-0. 今ある課題</span>
+    <div class="msg">
+      <h2><span class="hl">手足を動かしてくれる</span>AIが、欲しい。</h2>
+    </div>
+    <div class="note" style="max-width: 880px;">
+      <span class="note-title">これまで諦めていたこと</span>
+      <p class="body">
+        「デザインができないから、チラシは外注しかない」「動画なんて自分で作れない」——<br>
+        この前提を、AIが書き換えつつあります。<span class="em">壁打ちだけでなく、実際の制作物を一緒に作る</span>段階に来ています。
+      </p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- Ch3: 作れるものを知る -->
+  <section class="slide">
+    <span class="tag">3-1. 作れるものを知る</span>
+    <div class="msg">
+      <h2>AIで、<span class="hl">こんなもの</span>が作れる。</h2>
+    </div>
+    <div class="four-col" style="margin-top: 32px; grid-template-columns: repeat(5, 1fr);">
+      <div class="info-card">
+        <div class="badge">①</div>
+        <div class="ttl" style="margin-top: 6px;">アクセスマップ</div>
+        <div class="desc">最寄駅・駐車場・周辺案内まで、見やすいマップに。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">②</div>
+        <div class="ttl" style="margin-top: 6px;">行事カレンダー</div>
+        <div class="desc">年間行事の一覧。SNS・サイト・印刷どこでも使える。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">③</div>
+        <div class="ttl" style="margin-top: 6px;">お寺の紹介チラシ</div>
+        <div class="desc">来山時の渡し物・初参拝の方への案内に。ペラから多面構成まで。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">④</div>
+        <div class="ttl" style="margin-top: 6px;">樹木葬案内チラシ</div>
+        <div class="desc">永代供養墓・樹木葬の案内。問い合わせ起点になる1枚。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">⑤</div>
+        <div class="ttl" style="margin-top: 6px;">終活セミナーチラシ</div>
+        <div class="desc">セミナー告知。日程・対象・申込導線まで含めて。</div>
+      </div>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- Ch3: デザイン仕様書の3つの作り方 -->
+  <section class="slide">
+    <span class="tag">3-2. デザイン仕様書のつくり方</span>
+    <div class="msg">
+      <h2>仕様書には、<span class="hl">3つのカタチ</span>がある。</h2>
+    </div>
+    <div class="three-col" style="margin-top: 36px;">
+      <div class="info-card">
+        <div class="badge">①</div>
+        <div class="ttl" style="margin-top: 6px;">ポン！と出す</div>
+        <div class="desc">頭の中の要望をそのままAIに投げて、最初の形を作らせる。素早く全体像を見たい時に。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">②</div>
+        <div class="ttl" style="margin-top: 6px;">壁打ちしながら作る</div>
+        <div class="desc">AIに質問を返してもらいながら、要件を一緒に詰めていく。考えが整理できる。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">③</div>
+        <div class="ttl" style="margin-top: 6px;">プロの仕様書ベース</div>
+        <div class="desc">デザイナーが使う仕様書フォーマットを土台に、自坊に合わせて作り込む。再現性が高い。</div>
+      </div>
+    </div>
+    <div class="note" style="max-width: 900px; margin-top: 24px;">
+      <span class="note-title">使い分け</span>
+      <p class="body">
+        初めは①、慣れたら②、本気で量産するなら③へ。<span class="em">指示・仕様の精度</span>が、出てくる成果物の精度を決めます。
+      </p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- Ch3: notebookLM -->
+  <section class="slide">
+    <span class="tag">3-3. NotebookLM活用</span>
+    <div class="msg">
+      <h2>自坊の<span class="hl">資料を読み込ませて</span>、活かす。</h2>
+    </div>
+    <div class="two-col" style="margin-top: 30px;">
+      <div class="info-card">
+        <div class="badge">入</div>
+        <div class="ttl" style="margin-top: 6px;">寺報を入れる</div>
+        <div class="desc">過去の寺報PDFを読み込ませて、「次号の構成案」「過去記事の要約」「検索」が可能に。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">出</div>
+        <div class="ttl" style="margin-top: 6px;">動画にする</div>
+        <div class="desc">読み込んだ資料を音声・動画にも展開。聞く寺報、伝える素材として配信。</div>
+      </div>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- Ch3: こんなものも作れる -->
+  <section class="slide">
+    <span class="tag-outline">3-4. こんなものも作れます</span>
+    <div class="msg">
+      <h2>制作の<span class="hl">射程</span>は、もっと広い。</h2>
+    </div>
+    <div class="three-col" style="margin-top: 36px;">
+      <div class="info-card">
+        <div class="badge">動</div>
+        <div class="ttl" style="margin-top: 6px;">テロップ入り動画</div>
+        <div class="desc">法話・行事の動画に自動でテロップ。SNS用ショート動画も短時間で。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">板</div>
+        <div class="ttl" style="margin-top: 6px;">スライド自動生成</div>
+        <div class="desc">講話用・檀信徒向けの資料を、原稿からスライドへ。今回のこの資料も同じ仕組み。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">SNS</div>
+        <div class="ttl" style="margin-top: 6px;">Instagram投稿</div>
+        <div class="desc">ネタ出し → 画像 → キャプション → ハッシュタグまで一気通貫で。</div>
+      </div>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- Ch3: カンタン＝誰でもできる（注意） -->
+  <section class="slide">
+    <span class="tag-outline">3-5. ただし、注意点</span>
+    <div class="msg">
+      <h2>カンタン＝誰でもできる、ということ。</h2>
+    </div>
+    <div class="note" style="max-width: 900px;">
+      <span class="note-title">2つの落とし穴</span>
+      <ul class="body">
+        <li><span class="em">綺麗なものが正義ではない</span>——「整っているだけ」のチラシは、人の心に届きにくい</li>
+        <li><span class="em">没個性・均一化</span>——AI標準のままだと、どの寺も同じ顔になる</li>
+      </ul>
+      <p class="body" style="margin-top: 10px;">
+        だからこそ、自坊らしさ（言葉・写真・想い）を意識して<span class="em">乗せ込む</span>ことが重要です。
+      </p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- Ch3: 近道はない -->
+  <section class="slide">
+    <div class="msg" style="text-align:center;">
+      <h1 style="font-size:72px;">近道はない。<br><span class="hl">触ることが、全て。</span></h1>
+    </div>
+    <p class="sub" style="text-align:center; margin-top: 30px;">
+      動画を観るだけ、人の話を聞くだけでは、定着しません。<br>
+      自分の手で1回作ってみることが、いちばんの近道です。
+    </p>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- Ch3: なぜ専門家が必要か -->
+  <section class="slide">
+    <span class="tag">3-6. それでも専門家が必要な理由</span>
+    <div class="msg">
+      <h2><span class="hl">指示・仕様設計</span>で、生成方向性が決まる。</h2>
+    </div>
+    <div class="note" style="max-width: 900px;">
+      <span class="note-title">専門家の役割</span>
+      <p class="body">
+        AIが作業をしてくれる時代でも、<span class="em">「何を作るべきか」を決める力</span>＝指示・仕様の設計は人間側に残ります。<br>
+        専門家は手を動かす人ではなく、<span class="em">方向性を見極める人</span>に役割が変わっていきます。
+      </p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- Ch3: 付箋ワーク③ - 何から始めますか？ -->
+  <section class="slide">
+    <span class="tag tag-green">付箋ワーク ③（前半）</span>
+    <div class="msg">
+      <h1><span class="hl">何から始めます</span>か？</h1>
+    </div>
+    <div class="note" style="max-width: 820px;">
+      <span class="note-title">進め方</span>
+      <ul class="body">
+        <li>「自坊に戻って、まず触る/作るもの」を1つ、付箋に書き出し</li>
+        <li>記入：3分　／　シェア：2分（近くの方と）</li>
+      </ul>
+      <p class="sub" style="margin-top:10px;">→ "今日中にやること"くらいの粒度で具体的に。</p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- Ch3: 近道 - データを1箇所に -->
+  <section class="slide">
+    <span class="tag">3-7. 近道</span>
+    <div class="msg">
+      <h2>データは、<span class="hl">1箇所</span>にまとめておく。</h2>
+    </div>
+    <div class="three-col" style="margin-top: 36px;">
+      <div class="info-card">
+        <div class="badge">①</div>
+        <div class="ttl" style="margin-top: 6px;">Googleドライブが推奨</div>
+        <div class="desc">無料で十分・共有も簡単・スマホでも見られる。寺社の標準ストレージに。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">②</div>
+        <div class="ttl" style="margin-top: 6px;">事故に強い</div>
+        <div class="desc">クラウド保存で、PC故障や紛失・誤削除に強い。バックアップが自動化される。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">③</div>
+        <div class="ttl" style="margin-top: 6px;">自分情報を記録</div>
+        <div class="desc">経歴・価値観・自坊の歩み・写真など、自分を構成する情報をすべて1箇所に集約。</div>
+      </div>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- Ch3: 付箋ワーク③ -->
+  <section class="slide">
+    <span class="tag tag-green">付箋ワーク ③（後半）</span>
+    <div class="msg">
+      <h1>今日<span class="hl">学べたこと</span>を<br>書いてシェア。</h1>
+    </div>
+    <div class="note" style="max-width: 820px;">
+      <span class="note-title">進め方</span>
+      <ul class="body">
+        <li>「気づき」「明日から試したいこと」を付箋に書き出し</li>
+        <li>記入：3分　／　シェア：2分（近くの方と）</li>
+      </ul>
+      <p class="sub" style="margin-top:10px;">→ 終わったら、成果物を持って写真撮影タイムです。</p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- ============================== -->
+  <!-- CLOSING: 楽しむこと / 最後のお願い -->
+  <!-- ============================== -->
+
+  <!-- 成果物発表＋撮影 -->
+  <section class="slide">
+    <span class="tag">締めくくり</span>
+    <div class="msg">
+      <h2>成果物を持って、<span class="hl">写真撮影</span>。</h2>
+    </div>
+    <div class="note" style="max-width: 820px;">
+      <span class="note-title">進め方</span>
+      <ul class="body">
+        <li>1人ずつ、今日作ったチラシをサッと紹介（30秒）</li>
+        <li>成果物を手に、集合写真を1枚</li>
+      </ul>
+      <p class="sub" style="margin-top:10px;">→ 写真は当日レポート・SNSでの発信にも使わせていただきます（NGの方は事前にお声がけください）。</p>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 楽しむこと -->
+  <section class="slide">
+    <div class="msg" style="text-align:center;">
+      <h1 style="font-size:80px;">何より、<br><span class="hl">楽しむこと。</span></h1>
+    </div>
+    <p class="sub" style="text-align:center; margin-top:32px; font-size: 22px;">
+      触ること、試すこと、失敗すること、笑うこと。<br>
+      その積み重ねが、いちばん早く"使える人"にしてくれます。
+    </p>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 最後のお願い -->
+  <section class="slide">
+    <span class="tag">最後のお願い</span>
+    <div class="msg">
+      <h2>帰る前に、<span class="hl">2つだけ</span>。</h2>
+    </div>
+    <div class="two-col" style="margin-top: 32px;">
+      <div class="info-card">
+        <div class="badge">①</div>
+        <div class="icon">
+          <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="20" y="12" width="40" height="56" rx="3"/>
+            <line x1="28" y1="26" x2="52" y2="26"/>
+            <line x1="28" y1="36" x2="52" y2="36"/>
+            <line x1="28" y1="46" x2="44" y2="46"/>
+            <polyline points="28,58 32,62 40,54"/>
+          </svg>
+        </div>
+        <div class="ttl">アンケートにご回答</div>
+        <div class="desc">講義の感想・改善点・2日目の希望など。次回以降の進化のために、ぜひ率直なお声をください。</div>
+      </div>
+      <div class="info-card">
+        <div class="badge">②</div>
+        <div class="icon">
+          <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="12" y="20" width="56" height="40" rx="6"/>
+            <circle cx="28" cy="40" r="3" fill="currentColor"/>
+            <circle cx="40" cy="40" r="3" fill="currentColor"/>
+            <circle cx="52" cy="40" r="3" fill="currentColor"/>
+            <polyline points="22,60 26,68 32,62"/>
+          </svg>
+        </div>
+        <div class="ttl">LINEグループに成果物投稿</div>
+        <div class="desc">今日作ったチラシをLINEグループへ。参加者間でアイデア・工夫を共有し、お互いの引き出しを増やしましょう。</div>
+      </div>
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+  <!-- 終わり -->
+  <section class="slide chapter">
+    <div class="ch-num">DAY 1 ／ FIN.</div>
+    <div class="ch-bar"></div>
+    <div class="ch-title">最後に、<br><span class="hl">📷 集合写真撮影</span>。</div>
+    <div class="ch-sub" style="margin-top: 28px;">
+      みなさまの成果物を手に、本堂前で1枚。<br>
+      本日のレポート・SNS発信にも活用させていただきます<span style="font-size:14px;">（NGの方は事前にお声がけください）</span>。
+    </div>
+    <div class="ch-sub" style="margin-top: 36px; padding-top: 24px; border-top: 1px solid #eee;">
+      <span style="font-weight:700; color: var(--primary);">ありがとうございました。</span><br>
+      DAY 2「発展編」｜ 2026.5.15（金）11:00 – 15:00<br>
+      寺社の右腕＝AIエージェントをつくりあげる日。お待ちしています。
+    </div>
+    <div class="slide-num"></div>
+  </section>
+
+</div>
+
+<div class="progress"><div class="progress-fill" id="bar"></div></div>
+<div class="controls">← → / Space でスライド送り ・ F で全画面 ・ 印刷でPDF化</div>
+
+<script>
+  // Wrap each infographic group (containers with .info-card children) with a 図解 toggle
+  document.querySelectorAll('.two-col, .three-col, .four-col').forEach((container) => {
+    // Only treat as infographic if it has direct .info-card children
+    const hasCards = Array.from(container.children).some((c) => c.classList && c.classList.contains('info-card'));
+    if (!hasCards) return;
+    if (container.parentElement && container.parentElement.classList.contains('figure-body')) return;
+    const wrap = document.createElement('div');
+    wrap.className = 'infographic-wrap';
+    // Preserve original inline style (e.g. grid-template-columns override) by leaving the container intact
+    container.parentNode.insertBefore(wrap, container);
+    const btn = document.createElement('button');
+    btn.className = 'figure-toggle';
+    btn.type = 'button';
+    btn.innerHTML = '図解 <span class="arrow">▼</span>';
+    const body = document.createElement('div');
+    body.className = 'figure-body';
+    body.appendChild(container);
+    wrap.appendChild(btn);
+    wrap.appendChild(body);
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      wrap.classList.toggle('open');
+    });
+    body.addEventListener('click', (e) => e.stopPropagation());
+  });
+
+  // Wrap each .note content into a collapsible body + toggle button
+  document.querySelectorAll('.note').forEach((note) => {
+    // Skip if already wrapped
+    if (note.querySelector('.note-toggle')) return;
+    const inner = document.createDocumentFragment();
+    while (note.firstChild) inner.appendChild(note.firstChild);
+    const btn = document.createElement('button');
+    btn.className = 'note-toggle';
+    btn.type = 'button';
+    btn.innerHTML = '解説 <span class="arrow">▼</span>';
+    const body = document.createElement('div');
+    body.className = 'note-body';
+    body.appendChild(inner);
+    note.appendChild(btn);
+    note.appendChild(body);
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      note.classList.toggle('open');
+    });
+    // Prevent clicks inside the body from triggering slide nav
+    body.addEventListener('click', (e) => e.stopPropagation());
+  });
+
+  const slides = document.querySelectorAll('.slide');
+  const bar = document.getElementById('bar');
+  const total = slides.length;
+  // Auto-set slide numbers
+  slides.forEach((s, k) => {
+    const num = s.querySelector('.slide-num');
+    if (num) num.textContent = (k + 1) + ' / ' + total;
+  });
+
+  // Auto-inject chapter header
+  let currentChNum = 'CHAPTER 0';
+  let currentChName = 'ガイダンス';
+  slides.forEach((slide) => {
+    if (slide.classList.contains('chapter')) {
+      const num = slide.querySelector('.ch-num');
+      const ttl = slide.querySelector('.ch-title');
+      if (num) currentChNum = num.textContent.trim();
+      if (ttl) currentChName = ttl.textContent.replace(/\s+/g, ' ').trim();
+      return; // skip header on chapter intro itself
+    }
+    if (slide.classList.contains('title')) return;
+    if (slide.querySelector(':scope > .chapter-header')) return;
+    const header = document.createElement('div');
+    header.className = 'chapter-header';
+    header.innerHTML = currentChNum + '<span class="ch-divider">／</span><span class="ch-name">' + currentChName + '</span>';
+    slide.insertBefore(header, slide.firstChild);
+  });
+  let idx = 0;
+  function show(i) {
+    idx = Math.max(0, Math.min(slides.length - 1, i));
+    slides.forEach((s, k) => s.classList.toggle('active', k === idx));
+    bar.style.width = ((idx + 1) / slides.length * 100) + '%';
+  }
+  document.addEventListener('keydown', (e) => {
+    if (['ArrowRight', ' ', 'PageDown', 'l', 'j'].includes(e.key)) { e.preventDefault(); show(idx + 1); }
+    else if (['ArrowLeft', 'PageUp', 'h', 'k'].includes(e.key)) { e.preventDefault(); show(idx - 1); }
+    else if (e.key === 'Home') show(0);
+    else if (e.key === 'End') show(slides.length - 1);
+    else if (e.key === 'f' || e.key === 'F') {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
+    }
+  });
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('a,button,input,textarea')) return;
+    const x = e.clientX, w = window.innerWidth;
+    if (x > w * 0.65) show(idx + 1);
+    else if (x < w * 0.35) show(idx - 1);
+  });
+  show(0);
+</script>
+</body>
+</html>
