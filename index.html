@@ -359,6 +359,161 @@
     text-align: left;
     margin-top: 6px;
   }
+  /* Case explorer (事例紹介 5要素 + クリック詳細) */
+  .case-explorer .case-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+    margin-top: 20px;
+  }
+  .case-explorer .case-card {
+    position: relative;
+    background: #fff;
+    border: 2px solid var(--primary);
+    border-radius: 6px;
+    padding: 30px 12px 14px;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(237,97,3,0.08);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  }
+  .case-explorer .case-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 18px rgba(237,97,3,0.18);
+  }
+  .case-explorer .case-card.active {
+    background: #fff7ee;
+    border-width: 3px;
+    box-shadow: 0 8px 20px rgba(237,97,3,0.25);
+  }
+  .case-explorer .case-card .badge {
+    position: absolute;
+    top: -16px; left: 50%; transform: translateX(-50%);
+    width: 32px; height: 32px;
+    background: var(--primary); color: #fff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 700;
+    box-shadow: 0 2px 6px rgba(237,97,3,0.3);
+  }
+  .case-explorer .case-card .ttl {
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.4;
+    color: var(--text);
+    margin-top: 4px;
+  }
+  .case-explorer .case-card .desc {
+    font-size: 12px;
+    color: var(--text-sub);
+    margin-top: 6px;
+    line-height: 1.5;
+  }
+  .case-detail-panels {
+    margin-top: 22px;
+    min-height: 230px;
+  }
+  .case-panel {
+    display: none;
+    animation: caseFade 0.25s ease;
+  }
+  .case-panel.active { display: block; }
+  @keyframes caseFade {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .case-heading {
+    display: flex; align-items: baseline; gap: 12px;
+    font-size: 22px; font-weight: 700; color: var(--text);
+    margin-bottom: 14px;
+  }
+  .case-heading .case-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 32px; height: 32px;
+    background: var(--primary); color: #fff;
+    border-radius: 50%;
+    font-size: 16px; flex-shrink: 0;
+  }
+  .case-heading .case-heading-text { line-height: 1.4; }
+  .case-items {
+    display: grid;
+    gap: 12px;
+  }
+  .case-items.cols-2 { grid-template-columns: 1fr 1fr; }
+  .case-items.cols-4 { grid-template-columns: repeat(4, 1fr); }
+  .case-item {
+    background: #fff;
+    border: 1.5px solid var(--primary);
+    border-radius: 5px;
+    padding: 12px 16px;
+    box-shadow: 0 2px 6px rgba(237,97,3,0.06);
+  }
+  .case-item .item-label {
+    display: inline-block;
+    background: var(--primary); color: #fff;
+    font-size: 11px; font-weight: 700;
+    padding: 2px 9px;
+    border-radius: 3px;
+    margin-bottom: 6px;
+    letter-spacing: 0.04em;
+  }
+  .case-item .item-title {
+    font-size: 15px; font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+    line-height: 1.4;
+  }
+  .case-item .item-desc {
+    font-size: 13px;
+    color: var(--text-sub);
+    line-height: 1.6;
+  }
+
+  /* Q&A answer toggle (よくある質問) */
+  .qa-answer { margin-top: 18px; }
+  .qa-toggle {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--primary); color: #fff;
+    padding: 9px 22px;
+    font-size: 15px; font-weight: 700;
+    letter-spacing: 0.06em;
+    border: none; border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    box-shadow: 0 2px 6px rgba(237,97,3,0.25);
+    transition: background 0.15s ease;
+  }
+  .qa-toggle:hover { background: #d65500; }
+  .qa-toggle .arrow {
+    display: inline-block;
+    transition: transform 0.25s ease;
+    font-size: 12px;
+  }
+  .qa-answer.open .qa-toggle .arrow { transform: rotate(180deg); }
+  .qa-body {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.4s ease, opacity 0.3s ease, margin-top 0.3s ease;
+    margin-top: 0;
+  }
+  .qa-answer.open .qa-body {
+    max-height: 1200px;
+    opacity: 1;
+    margin-top: 18px;
+  }
+  .qa-conclusion {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.45;
+    margin: 0 0 16px;
+  }
+  .qa-conclusion .hl {
+    background: linear-gradient(transparent 50%, rgba(237,97,3,0.22) 50%);
+    padding: 0 4px;
+  }
+
   /* Comparison table */
   .compare-table-wrap {
     overflow-x: auto;
@@ -1129,163 +1284,83 @@
     <div class="slide-num"></div>
   </section>
 
-  <!-- 事例紹介オーバービュー -->
-  <section class="slide">
+  <!-- 事例紹介（5要素を表示したまま、クリックで詳細切替） -->
+  <section class="slide case-explorer">
     <span class="tag-outline">事例紹介</span>
     <div class="msg">
       <h2>お寺で、<span class="hl">こんなこと</span>ができます</h2>
     </div>
-    <div class="four-col" style="margin-top: 28px; grid-template-columns: repeat(5, 1fr);">
-      <div class="info-card">
+    <div class="case-grid">
+      <div class="case-card active" data-case="1">
         <div class="badge">①</div>
-        <div class="ttl" style="margin-top:6px;">知ってもらう（広報）</div>
-        <div class="desc">寺報・SNS・お知らせの発信。</div>
+        <div class="ttl">知ってもらう（広報）</div>
+        <div class="desc">寺報・SNS・お知らせの発信</div>
       </div>
-      <div class="info-card">
+      <div class="case-card" data-case="2">
         <div class="badge">②</div>
-        <div class="ttl" style="margin-top:6px;">制作・ものつくり</div>
-        <div class="desc">画像・PDF・HP・動画。</div>
+        <div class="ttl">制作・ものつくり</div>
+        <div class="desc">画像・PDF・HP・動画</div>
       </div>
-      <div class="info-card">
+      <div class="case-card" data-case="3">
         <div class="badge">③</div>
-        <div class="ttl" style="margin-top:6px;">業務改善</div>
-        <div class="desc">レポート・メール・予定・TODO。</div>
+        <div class="ttl">業務改善</div>
+        <div class="desc">レポート・メール・予定・TODO</div>
       </div>
-      <div class="info-card">
+      <div class="case-card" data-case="4">
         <div class="badge">④</div>
-        <div class="ttl" style="margin-top:6px;">スキルを拡げる</div>
-        <div class="desc">多言語・同時翻訳。</div>
+        <div class="ttl">スキルを拡げる</div>
+        <div class="desc">多言語・同時翻訳</div>
       </div>
-      <div class="info-card">
+      <div class="case-card" data-case="5">
         <div class="badge">⑤</div>
-        <div class="ttl" style="margin-top:6px;">お墓の案内 ほか</div>
-        <div class="desc">参拝・授戒・終活まで。</div>
+        <div class="ttl">お墓の案内 ほか</div>
+        <div class="desc">参拝・授戒・終活</div>
       </div>
     </div>
-    <p class="sub" style="margin-top: 14px;">→ 1つずつ、具体例を見ていきます。</p>
-    <div class="slide-num"></div>
-  </section>
+    <p class="sub" style="margin-top: 10px; text-align:center;">→ カードをクリックすると、下に詳細が表示されます。</p>
 
-  <!-- 事例①: 知ってもらう（広報） -->
-  <section class="slide">
-    <span class="tag">事例 ① 知ってもらう（広報）</span>
-    <div class="msg">
-      <h2>AIで、<span class="hl">寺報・SNS</span>の発信を支える</h2>
-    </div>
-    <div class="two-col" style="margin-top: 24px;">
-      <div class="info-card">
-        <div class="badge">寺報</div>
-        <div class="ttl" style="margin-top:6px;">寺報の作成</div>
-        <div class="desc">原稿の骨子・見出し案・要約・季節の挨拶文まで一気に。過去号を読み込ませてトーンを継承させる工夫も。</div>
+    <div class="case-detail-panels">
+      <div class="case-panel active" data-case="1">
+        <div class="case-heading"><span class="case-num">①</span><span class="case-heading-text">AIで、<span class="hl">寺報・SNS</span>の発信を支える</span></div>
+        <div class="case-items cols-2">
+          <div class="case-item"><span class="item-label">寺報</span><div class="item-title">寺報の作成</div><div class="item-desc">原稿の骨子・見出し案・要約・季節の挨拶文まで一気に。過去号を読み込ませてトーンを継承させる工夫も。</div></div>
+          <div class="case-item"><span class="item-label">SNS</span><div class="item-title">Instagramの配信運用</div><div class="item-desc">投稿ネタ出し → キャプション → ハッシュタグ → 画像案まで。週次運用の負担を大幅に下げられます。</div></div>
+        </div>
       </div>
-      <div class="info-card">
-        <div class="badge">SNS</div>
-        <div class="ttl" style="margin-top:6px;">Instagramの配信運用</div>
-        <div class="desc">投稿ネタ出し → キャプション → ハッシュタグ → 画像案まで。週次運用の負担を大幅に下げられます。</div>
+      <div class="case-panel" data-case="2">
+        <div class="case-heading"><span class="case-num">②</span><span class="case-heading-text"><span class="hl">"つくる"</span>が、寺社内で完結する</span></div>
+        <div class="case-items cols-4">
+          <div class="case-item"><span class="item-label">画</span><div class="item-title">画像つくり</div><div class="item-desc">行事案内・年賀状・看板用素材まで。素材購入や外注に頼らない制作体制に。</div></div>
+          <div class="case-item"><span class="item-label">P</span><div class="item-title">PDFつくり</div><div class="item-desc">配布資料・申込書・案内冊子。書式の整ったPDFを短時間で。</div></div>
+          <div class="case-item"><span class="item-label">HP</span><div class="item-title">HP・ページつくり</div><div class="item-desc">行事の特設ページ、永代供養墓ランディング、樹木葬LPなど。ノーコードで内製化。</div></div>
+          <div class="case-item"><span class="item-label">動</span><div class="item-title">動画つくり（テロップ入れ）</div><div class="item-desc">法話・行事の動画にテロップを自動付与。SNS短尺動画への展開も。</div></div>
+        </div>
+      </div>
+      <div class="case-panel" data-case="3">
+        <div class="case-heading"><span class="case-num">③</span><span class="case-heading-text">日々の<span class="hl">事務</span>を、AIに任せる</span></div>
+        <div class="case-items cols-4">
+          <div class="case-item"><span class="item-label">①</span><div class="item-title">資料を1枚レポートに</div><div class="item-desc">複数の議事録・PDFを読み込ませ、「1枚レポート」に要約。理事会・会議用素材に。</div></div>
+          <div class="case-item"><span class="item-label">②</span><div class="item-title">メールの下書きを作る</div><div class="item-desc">法事リマインド・初盆案内・問い合わせ返信など、定型メールの下書きを高速化。</div></div>
+          <div class="case-item"><span class="item-label">③</span><div class="item-title">お寺の予定を管理する</div><div class="item-desc">Googleカレンダーと連携して、空き日程の確認・候補日提案・案内文生成まで。</div></div>
+          <div class="case-item"><span class="item-label">④</span><div class="item-title">アイデア→TODO化</div><div class="item-desc">頭の中の「やりたい」を投げると、AIが整理してTODOリストに落とし込む。</div></div>
+        </div>
+      </div>
+      <div class="case-panel" data-case="4">
+        <div class="case-heading"><span class="case-num">④</span><span class="case-heading-text">1人で<span class="hl">何でもできる</span>体制へ</span></div>
+        <div class="case-items cols-2">
+          <div class="case-item"><span class="item-label">語</span><div class="item-title">多言語対応</div><div class="item-desc">英語・中国語・韓国語の案内文・サイト翻訳。インバウンド参拝者への案内が瞬時に整う。</div></div>
+          <div class="case-item"><span class="item-label">声</span><div class="item-title">同時翻訳（OpenAI realtime-2）</div><div class="item-desc">音声をリアルタイムで翻訳。境内ツアー・海外参拝者対応の最前線で使える機能。</div></div>
+        </div>
+      </div>
+      <div class="case-panel" data-case="5">
+        <div class="case-heading"><span class="case-num">⑤</span><span class="case-heading-text">参拝・檀務まで、<span class="hl">広く支える</span>AI</span></div>
+        <div class="case-items cols-2">
+          <div class="case-item"><span class="item-label">墓</span><div class="item-title">永代供養墓・樹木葬の案内応答</div><div class="item-desc">よくある質問への自動回答。ご相談リスト作成・進捗管理まで一気通貫で。</div></div>
+          <div class="case-item"><span class="item-label">参</span><div class="item-title">境内体験・檀信徒接点</div><div class="item-desc">境内マップ・スタンプラリーの素材生成、LINEへの応答補助。"届く"設計に。</div></div>
+        </div>
       </div>
     </div>
-    <div class="slide-num"></div>
-  </section>
 
-  <!-- 事例②: 制作・ものつくり -->
-  <section class="slide">
-    <span class="tag">事例 ② 制作・ものつくり</span>
-    <div class="msg">
-      <h2><span class="hl">"つくる"</span>が、寺社内で完結する</h2>
-    </div>
-    <div class="four-col" style="margin-top: 24px;">
-      <div class="info-card">
-        <div class="badge">画</div>
-        <div class="ttl" style="margin-top:6px;">画像つくり</div>
-        <div class="desc">行事案内・年賀状・看板用素材まで。素材購入や外注に頼らない制作体制に。</div>
-      </div>
-      <div class="info-card">
-        <div class="badge">P</div>
-        <div class="ttl" style="margin-top:6px;">PDFつくり</div>
-        <div class="desc">配布資料・申込書・案内冊子。書式の整ったPDFを短時間で。</div>
-      </div>
-      <div class="info-card">
-        <div class="badge">HP</div>
-        <div class="ttl" style="margin-top:6px;">HP・ページつくり</div>
-        <div class="desc">行事の特設ページ、永代供養墓ランディング、樹木葬LPなど。ノーコードで内製化。</div>
-      </div>
-      <div class="info-card">
-        <div class="badge">動</div>
-        <div class="ttl" style="margin-top:6px;">動画つくり（テロップ入れ）</div>
-        <div class="desc">法話・行事の動画にテロップを自動付与。SNS短尺動画への展開も。</div>
-      </div>
-    </div>
-    <div class="slide-num"></div>
-  </section>
-
-  <!-- 事例③: 業務改善 -->
-  <section class="slide">
-    <span class="tag">事例 ③ 業務改善</span>
-    <div class="msg">
-      <h2>日々の<span class="hl">事務</span>を、AIに任せる</h2>
-    </div>
-    <div class="four-col" style="margin-top: 24px;">
-      <div class="info-card">
-        <div class="badge">①</div>
-        <div class="ttl" style="margin-top:6px;">資料を1枚レポートに</div>
-        <div class="desc">複数の議事録・PDFを読み込ませ、「1枚レポート」に要約。理事会・会議用素材に。</div>
-      </div>
-      <div class="info-card">
-        <div class="badge">②</div>
-        <div class="ttl" style="margin-top:6px;">メールの下書きを作る</div>
-        <div class="desc">法事リマインド・初盆案内・問い合わせ返信など、定型メールの下書きを高速化。</div>
-      </div>
-      <div class="info-card">
-        <div class="badge">③</div>
-        <div class="ttl" style="margin-top:6px;">お寺の予定を管理する</div>
-        <div class="desc">Googleカレンダーと連携して、空き日程の確認・候補日提案・案内文生成まで。</div>
-      </div>
-      <div class="info-card">
-        <div class="badge">④</div>
-        <div class="ttl" style="margin-top:6px;">アイデア→TODO化</div>
-        <div class="desc">頭の中の「やりたい」を投げると、AIが整理してTODOリストに落とし込む。</div>
-      </div>
-    </div>
-    <div class="slide-num"></div>
-  </section>
-
-  <!-- 事例④: スキルを拡げる -->
-  <section class="slide">
-    <span class="tag">事例 ④ スキルを拡げる</span>
-    <div class="msg">
-      <h2>1人で<span class="hl">何でもできる</span>体制へ</h2>
-    </div>
-    <div class="two-col" style="margin-top: 24px;">
-      <div class="info-card">
-        <div class="badge">語</div>
-        <div class="ttl" style="margin-top:6px;">多言語対応</div>
-        <div class="desc">英語・中国語・韓国語の案内文・サイト翻訳。インバウンド参拝者への案内が瞬時に整う。</div>
-      </div>
-      <div class="info-card">
-        <div class="badge">声</div>
-        <div class="ttl" style="margin-top:6px;">同時翻訳（OpenAI realtime-2）</div>
-        <div class="desc">音声をリアルタイムで翻訳。境内ツアー・海外参拝者対応の最前線で使える機能。</div>
-      </div>
-    </div>
-    <div class="slide-num"></div>
-  </section>
-
-  <!-- 事例⑤: お墓の案内ほか -->
-  <section class="slide">
-    <span class="tag">事例 ⑤ お墓の案内 ほか</span>
-    <div class="msg">
-      <h2>参拝・檀務まで、<span class="hl">広く支える</span>AI</h2>
-    </div>
-    <div class="note" style="max-width: 900px;">
-      <span class="note-title">具体例</span>
-      <ul class="body">
-        <li>永代供養墓・樹木葬の案内応答（よくある質問への自動回答）</li>
-        <li>お墓のご相談リスト作成・進捗管理</li>
-        <li>境内マップ・スタンプラリーの素材生成</li>
-        <li>檀信徒との接点（LINE）に応答補助を仕込む</li>
-      </ul>
-      <p class="sub" style="margin-top:10px;">→ "やる気と時間"の問題を超えて、寺社が現代の生活者に届く設計が可能になります。</p>
-    </div>
     <div class="slide-num"></div>
   </section>
 
@@ -1790,23 +1865,29 @@
   <section class="slide">
     <span class="tag-outline">よくある質問 ①</span>
     <div class="msg">
-      <h2>「課金したほうがいい？」<br>→ 結論、<span class="hl">基本はNO</span></h2>
+      <h2>「<span class="hl">課金したほうがいい</span>？」</h2>
     </div>
-    <div class="three-col" style="margin-top: 28px;">
-      <div class="info-card">
-        <div class="badge">①</div>
-        <div class="ttl" style="margin-top: 6px;">モデル差はほぼない</div>
-        <div class="desc">無料モデルでも寺社業務の8〜9割は十分こなせる。「モデル差を埋めるための課金」は不要。</div>
-      </div>
-      <div class="info-card">
-        <div class="badge">②</div>
-        <div class="ttl" style="margin-top: 6px;">頻度レベルによる</div>
-        <div class="desc">毎日業務で長く使う・大量のファイルを処理する場合のみ、有料プランを検討。</div>
-      </div>
-      <div class="info-card">
-        <div class="badge">③</div>
-        <div class="ttl" style="margin-top: 6px;">セキュリティ・利用制限</div>
-        <div class="desc">学習されない設定、利用上限、データ管理。無料/有料で何が違うかを把握してから判断。</div>
+    <div class="qa-answer">
+      <button class="qa-toggle" type="button">回答を見る <span class="arrow">▼</span></button>
+      <div class="qa-body">
+        <p class="qa-conclusion">→ 結論、<span class="hl">基本はNO</span></p>
+        <div class="three-col" style="margin-top: 20px;">
+          <div class="info-card">
+            <div class="badge">①</div>
+            <div class="ttl" style="margin-top: 6px;">モデル差はほぼない</div>
+            <div class="desc">無料モデルでも寺社業務の8〜9割は十分こなせる。「モデル差を埋めるための課金」は不要。</div>
+          </div>
+          <div class="info-card">
+            <div class="badge">②</div>
+            <div class="ttl" style="margin-top: 6px;">頻度レベルによる</div>
+            <div class="desc">毎日業務で長く使う・大量のファイルを処理する場合のみ、有料プランを検討。</div>
+          </div>
+          <div class="info-card">
+            <div class="badge">③</div>
+            <div class="ttl" style="margin-top: 6px;">セキュリティ・利用制限</div>
+            <div class="desc">学習されない設定、利用上限、データ管理。無料/有料で何が違うかを把握してから判断。</div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="slide-num"></div>
@@ -1816,18 +1897,24 @@
   <section class="slide">
     <span class="tag-outline">よくある質問 ②</span>
     <div class="msg">
-      <h2>「乗り換えたら<span class="hl">記憶もなくなる</span>？」<br>→ AIは乗り換え前提で考える</h2>
+      <h2>「乗り換えたら<span class="hl">記憶もなくなる</span>？」</h2>
     </div>
-    <div class="note" style="max-width: 900px;">
-      <span class="note-title">考え方</span>
-      <ul class="body">
-        <li>今日お伝えする内容も、半年後には変わっているかもしれない</li>
-        <li>契約は<span class="em">月額</span>がおすすめ（年額は乗り換えできなくなる）</li>
-        <li><span class="em">記憶と仕様は引き継げる</span>ようにしておく（仕様書・参照ファイルの保存）</li>
-      </ul>
-      <p class="body" style="margin-top: 10px;">
-        ツールに縛られず、必要な時に乗り換えられる準備をしておくことが、長く使い続けるコツです。
-      </p>
+    <div class="qa-answer">
+      <button class="qa-toggle" type="button">回答を見る <span class="arrow">▼</span></button>
+      <div class="qa-body">
+        <p class="qa-conclusion">→ AIは<span class="hl">乗り換え前提</span>で考える</p>
+        <div class="note no-toggle" style="max-width: 900px; margin-top: 16px;">
+          <span class="note-title">考え方</span>
+          <ul class="body">
+            <li>今日お伝えする内容も、半年後には変わっているかもしれない</li>
+            <li>契約は<span class="em">月額</span>がおすすめ（年額は乗り換えできなくなる）</li>
+            <li><span class="em">記憶と仕様は引き継げる</span>ようにしておく（仕様書・参照ファイルの保存）</li>
+          </ul>
+          <p class="body" style="margin-top: 10px;">
+            ツールに縛られず、必要な時に乗り換えられる準備をしておくことが、長く使い続けるコツです。
+          </p>
+        </div>
+      </div>
     </div>
     <div class="slide-num"></div>
   </section>
@@ -1836,23 +1923,29 @@
   <section class="slide">
     <span class="tag-outline">よくある質問 ③</span>
     <div class="msg">
-      <h2>「なぜ嘘をつくの？」<br>→ <span class="hl">指示と情報</span>に原因がある</h2>
+      <h2>「<span class="hl">なぜ嘘をつくの</span>？」</h2>
     </div>
-    <div class="three-col" style="margin-top: 28px;">
-      <div class="info-card">
-        <div class="badge">原因1</div>
-        <div class="ttl" style="margin-top: 6px;">指示文が曖昧</div>
-        <div class="desc">「いい感じに」「適当に」など、何を求めているかが伝わらない指示は推測で埋められる。</div>
-      </div>
-      <div class="info-card">
-        <div class="badge">原因2</div>
-        <div class="ttl" style="margin-top: 6px;">情報が少ない</div>
-        <div class="desc">前提情報がなければ、世間の一般論で答えるしかない。自坊の事情を渡せていない。</div>
-      </div>
-      <div class="info-card">
-        <div class="badge">寺社</div>
-        <div class="ttl" style="margin-top: 6px;">寺社特有のリスク</div>
-        <div class="desc">同姓同名の寺院・宗派の混合など、AIが間違えやすい領域がある。固有情報の渡し方が鍵。</div>
+    <div class="qa-answer">
+      <button class="qa-toggle" type="button">回答を見る <span class="arrow">▼</span></button>
+      <div class="qa-body">
+        <p class="qa-conclusion">→ <span class="hl">指示と情報</span>に原因がある</p>
+        <div class="three-col" style="margin-top: 20px;">
+          <div class="info-card">
+            <div class="badge">原因1</div>
+            <div class="ttl" style="margin-top: 6px;">指示文が曖昧</div>
+            <div class="desc">「いい感じに」「適当に」など、何を求めているかが伝わらない指示は推測で埋められる。</div>
+          </div>
+          <div class="info-card">
+            <div class="badge">原因2</div>
+            <div class="ttl" style="margin-top: 6px;">情報が少ない</div>
+            <div class="desc">前提情報がなければ、世間の一般論で答えるしかない。自坊の事情を渡せていない。</div>
+          </div>
+          <div class="info-card">
+            <div class="badge">寺社</div>
+            <div class="ttl" style="margin-top: 6px;">寺社特有のリスク</div>
+            <div class="desc">同姓同名の寺院・宗派の混合など、AIが間違えやすい領域がある。固有情報の渡し方が鍵。</div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="slide-num"></div>
@@ -2356,7 +2449,7 @@
       <div class="info-card">
         <div class="badge">板</div>
         <div class="ttl" style="margin-top: 6px;">スライド自動生成</div>
-        <div class="desc">講話用・檀信徒向けの資料を、原稿からスライドへ。今回のこの資料も同じ仕組み。</div>
+        <div class="desc">講話用・檀信徒向けの資料を、原稿からスライドへ。</div>
       </div>
       <div class="info-card">
         <div class="badge">SNS</div>
@@ -2364,6 +2457,9 @@
         <div class="desc">ネタ出し → 画像 → キャプション → ハッシュタグまで一気通貫で。</div>
       </div>
     </div>
+    <p class="sub" style="margin-top: 18px; text-align:center; font-size: 17px;">
+      ── 実は、<span class="em">このスライドもAIと壁打ちして</span>作っています。
+    </p>
     <div class="slide-num"></div>
   </section>
 
@@ -2575,6 +2671,8 @@
     const hasCards = Array.from(container.children).some((c) => c.classList && c.classList.contains('info-card'));
     if (!hasCards) return;
     if (container.parentElement && container.parentElement.classList.contains('figure-body')) return;
+    if (container.closest('.qa-body')) return;
+    if (container.closest('.case-detail-panels')) return;
     const wrap = document.createElement('div');
     wrap.className = 'infographic-wrap';
     // Preserve original inline style (e.g. grid-template-columns override) by leaving the container intact
@@ -2600,6 +2698,7 @@
     // Skip if already wrapped or marked to be shown as-is
     if (note.querySelector('.note-toggle')) return;
     if (note.classList.contains('no-toggle')) return;
+    if (note.closest('.qa-body')) return;
     const inner = document.createDocumentFragment();
     while (note.firstChild) inner.appendChild(note.firstChild);
     const btn = document.createElement('button');
@@ -2617,6 +2716,29 @@
     });
     // Prevent clicks inside the body from triggering slide nav
     body.addEventListener('click', (e) => e.stopPropagation());
+  });
+
+  // Q&A answer toggle (よくある質問)
+  document.querySelectorAll('.qa-toggle').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const ans = btn.closest('.qa-answer');
+      if (ans) ans.classList.toggle('open');
+    });
+  });
+
+  // Case explorer (事例紹介オーバービュー card-click)
+  document.querySelectorAll('.case-explorer .case-card').forEach((card) => {
+    card.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const slide = card.closest('.case-explorer');
+      const target = card.dataset.case;
+      slide.querySelectorAll('.case-card').forEach((c) => c.classList.remove('active'));
+      card.classList.add('active');
+      slide.querySelectorAll('.case-panel').forEach((p) => p.classList.remove('active'));
+      const panel = slide.querySelector('.case-panel[data-case="' + target + '"]');
+      if (panel) panel.classList.add('active');
+    });
   });
 
   const slides = document.querySelectorAll('.slide');
